@@ -8,7 +8,6 @@ import org.clever.dynamic.sql.scripting.xmltags.SqlNode;
 
 import java.util.HashMap;
 
-
 public class RawSqlSource implements SqlSource {
 
     private final SqlSource sqlSource;

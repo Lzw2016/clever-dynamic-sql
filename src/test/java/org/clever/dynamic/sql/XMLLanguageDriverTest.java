@@ -32,7 +32,7 @@ public class XMLLanguageDriverTest {
     @Test
     public void t2() {
         String sql = "<script>" +
-                "select * from sql_script where id in ( " +
+                "select * from sql_script where id=#{__frch_item_1} and id in ( " +
                 "    <foreach collection='list' item='item' separator=','>#{item}</foreach> " +
                 ") " +
                 "and name in (" +
@@ -45,6 +45,7 @@ public class XMLLanguageDriverTest {
         XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
         SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql, Map.class);
         Map<String, Object> params = new HashMap<>();
+        params.put("__frch_item_1", "value");
         List<Integer> list = new ArrayList<>();
         list.add(1);
         list.add(2);

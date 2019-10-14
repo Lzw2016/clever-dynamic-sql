@@ -1,18 +1,22 @@
 package org.clever.dynamic.sql.mapping;
 
+import lombok.Getter;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BoundSql {
 
     private final String sql;
-    //  private final List<ParameterMapping> parameterMappings;
+    @Getter
+    private final List<String> parameterMappings;
     private final Object parameterObject;
     private final Map<String, Object> additionalParameters;
-    //  private final MetaObject metaParameters;
 
-    public BoundSql(String sql, Object parameterObject) {
+    public BoundSql(String sql, List<String> parameterMappings, Object parameterObject) {
         this.sql = sql;
+        this.parameterMappings = parameterMappings;
         this.parameterObject = parameterObject;
         this.additionalParameters = new HashMap<>();
     }
@@ -23,5 +27,13 @@ public class BoundSql {
 
     public Object getParameterObject() {
         return parameterObject;
+    }
+
+    public void setAdditionalParameter(String name, Object value) {
+        additionalParameters.put(name, value);
+    }
+
+    public Object getAdditionalParameter(String name) {
+        return additionalParameters.get(name);
     }
 }
