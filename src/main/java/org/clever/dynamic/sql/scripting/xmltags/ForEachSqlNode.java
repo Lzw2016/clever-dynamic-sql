@@ -147,8 +147,7 @@ public class ForEachSqlNode implements SqlNode {
 
     }
 
-
-    private class PrefixedContext extends DynamicContext {
+    private static class PrefixedContext extends DynamicContext {
         private final DynamicContext delegate;
         private final String prefix;
         private boolean prefixApplied;
