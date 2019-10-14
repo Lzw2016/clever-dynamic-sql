@@ -7,33 +7,39 @@ import java.util.List;
 import java.util.Map;
 
 public class BoundSql {
-
-    private final String sql;
+    /**
+     * 原始参数对象
+     */
     @Getter
-    private final List<String> parameterMappings;
     private final Object parameterObject;
-    private final Map<String, Object> additionalParameters;
+    /**
+     * 生成的SQL语句
+     */
+    @Getter
+    private final String sql;
+    /**
+     * 参数列表(有顺序)
+     */
+    @Getter
+    private final List<String> parameterList;
+    /**
+     * parameterMappings
+     */
+    private final Map<String, Object> parametersMap;
 
-    public BoundSql(String sql, List<String> parameterMappings, Object parameterObject) {
+    public BoundSql(String sql, List<String> parameterList, Object parameterObject) {
         this.sql = sql;
-        this.parameterMappings = parameterMappings;
+        this.parameterList = parameterList;
         this.parameterObject = parameterObject;
-        this.additionalParameters = new HashMap<>();
+        this.parametersMap = new HashMap<>();
     }
 
-    public String getSql() {
-        return sql;
+
+    public void setParameter(String name, Object value) {
+        parametersMap.put(name, value);
     }
 
-    public Object getParameterObject() {
-        return parameterObject;
-    }
-
-    public void setAdditionalParameter(String name, Object value) {
-        additionalParameters.put(name, value);
-    }
-
-    public Object getAdditionalParameter(String name) {
-        return additionalParameters.get(name);
+    public Object getParameter(String name) {
+        return parametersMap.get(name);
     }
 }

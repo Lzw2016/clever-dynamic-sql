@@ -8,15 +8,15 @@ import java.util.List;
 public class StaticSqlSource implements SqlSource {
 
     private final String sql;
-    private final List<String> parameterMappings;
+    private final List<String> parameterList;
 
-    public StaticSqlSource(String sql, List<String> parameterMappings) {
+    public StaticSqlSource(String sql, List<String> parameterList) {
         this.sql = sql;
-        this.parameterMappings = parameterMappings;
+        this.parameterList = parameterList;
     }
 
     @Override
     public BoundSql getBoundSql(Object parameterObject) {
-        return new BoundSql(sql, parameterMappings, parameterObject);
+        return new BoundSql(sql, parameterList, parameterObject);
     }
 }

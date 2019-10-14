@@ -29,21 +29,18 @@ public class XMLLanguageDriverTest {
         log.info("--> {}", boundSql.getSql());
     }
 
+    // 参数是 Map
     @Test
     public void t2() {
-        String sql =
-                "<script>" +
-                "select * from sql_script where id=#{__frch_item_1} and id in ( " +
-                "    <foreach collection='list' item='item' separator=','>#{item}</foreach> " +
-                ") " +
-                "and name in (" +
-                "    <foreach collection='names' item='item' separator=','>#{item}</foreach>" +
-                ")" +
-                " order by ${orderBy}" +
+        String sql = "<script>" +
+                "   select * from sql_script where id=#{__frch_item_1} and id in ( " +
+                "       <foreach collection='list' item='item' separator=','>#{item}</foreach> " +
+                "   ) " +
+                "   and name in (" +
+                "       <foreach collection='names' item='item' separator=','>#{item}</foreach>" +
+                "   )" +
+                "   order by ${orderBy}" +
                 "</script>";
-//                "";
-
-//        sql = "<script> select * from sql_script where id=#{id} and name like '${name}' </script>";
         XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
         SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql);
         Map<String, Object> params = new HashMap<>();
@@ -68,4 +65,6 @@ public class XMLLanguageDriverTest {
         BoundSql boundSql = sqlSource.getBoundSql(params);
         log.info("--> {}", boundSql.getSql());
     }
+
+    // TODO 参数是 对象
 }

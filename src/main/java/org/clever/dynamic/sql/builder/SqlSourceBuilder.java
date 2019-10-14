@@ -1,5 +1,6 @@
 package org.clever.dynamic.sql.builder;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.clever.dynamic.sql.exceptions.BuilderException;
 import org.clever.dynamic.sql.mapping.SqlSource;
@@ -22,23 +23,20 @@ public class SqlSourceBuilder extends BaseBuilder {
         ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler();
         GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
         String sql = parser.parse(originalSql);
-        return new StaticSqlSource(sql, handler.getParameterMappings());
+        return new StaticSqlSource(sql, handler.getParameterList());
     }
 
     private static class ParameterMappingTokenHandler extends BaseBuilder implements TokenHandler {
-
-        private final List<String> parameterMappings = new ArrayList<>();
+        @Getter
+        private final List<String> parameterList = new ArrayList<>();
 
         public ParameterMappingTokenHandler() {
         }
 
-        public List<String> getParameterMappings() {
-            return parameterMappings;
-        }
-
         @Override
         public String handleToken(String content) {
-            parameterMappings.add(buildParameterMapping(content));
+            String parameterName = buildParameterMapping(content);
+            parameterList.add(parameterName);
             return "?";
         }
 
