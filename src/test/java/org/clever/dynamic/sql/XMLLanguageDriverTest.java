@@ -21,7 +21,7 @@ public class XMLLanguageDriverTest {
     public void t1() {
         String sql = "select * from sql_script where id=#{id} and name like '${name}'";
         XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
-        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql, Map.class);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql);
         Map<String, Object> params = new HashMap<>();
         params.put("id", 2);
         params.put("name", "%queryAll%");
@@ -31,7 +31,8 @@ public class XMLLanguageDriverTest {
 
     @Test
     public void t2() {
-        String sql = "<script>" +
+        String sql =
+                "<script>" +
                 "select * from sql_script where id=#{__frch_item_1} and id in ( " +
                 "    <foreach collection='list' item='item' separator=','>#{item}</foreach> " +
                 ") " +
@@ -40,10 +41,11 @@ public class XMLLanguageDriverTest {
                 ")" +
                 " order by ${orderBy}" +
                 "</script>";
+//                "";
 
 //        sql = "<script> select * from sql_script where id=#{id} and name like '${name}' </script>";
         XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
-        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql, Map.class);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql);
         Map<String, Object> params = new HashMap<>();
         params.put("__frch_item_1", "value");
         List<Integer> list = new ArrayList<>();

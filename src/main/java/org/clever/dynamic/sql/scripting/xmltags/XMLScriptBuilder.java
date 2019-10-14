@@ -14,22 +14,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class XMLScriptBuilder extends BaseBuilder {
 
     private final XNode context;
     private boolean isDynamic;
-    private final Class<?> parameterType;
     private final Map<String, NodeHandler> nodeHandlerMap = new HashMap<>();
 
     public XMLScriptBuilder(XNode context) {
-        this(context, null);
-    }
-
-    public XMLScriptBuilder(XNode context, Class<?> parameterType) {
         super();
         this.context = context;
-        this.parameterType = parameterType;
         initNodeHandlerMap();
     }
 
@@ -51,7 +44,7 @@ public class XMLScriptBuilder extends BaseBuilder {
         if (isDynamic) {
             sqlSource = new DynamicSqlSource(rootSqlNode);
         } else {
-            sqlSource = new RawSqlSource(rootSqlNode, parameterType);
+            sqlSource = new RawSqlSource(rootSqlNode);
         }
         return sqlSource;
     }

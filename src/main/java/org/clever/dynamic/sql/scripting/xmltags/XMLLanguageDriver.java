@@ -13,18 +13,18 @@ import java.util.Properties;
 public class XMLLanguageDriver implements LanguageDriver {
 
     @Override
-    public SqlSource createSqlSource(XNode script, Class<?> parameterType) {
-        XMLScriptBuilder builder = new XMLScriptBuilder(script, parameterType);
+    public SqlSource createSqlSource(XNode script) {
+        XMLScriptBuilder builder = new XMLScriptBuilder(script);
         return builder.parseScriptNode();
     }
 
     @Override
-    public SqlSource createSqlSource(String script, Class<?> parameterType) {
+    public SqlSource createSqlSource(String script) {
         final Properties variables = new Properties();
         // issue #3
         if (script.startsWith("<script>")) {
             XPathParser parser = new XPathParser(script, false, variables);
-            return createSqlSource(parser.evalNode("/script"), parameterType);
+            return createSqlSource(parser.evalNode("/script"));
         } else {
             // issue #127
             script = PropertyParser.parse(script, variables);
@@ -32,7 +32,7 @@ public class XMLLanguageDriver implements LanguageDriver {
             if (textSqlNode.isDynamic()) {
                 return new DynamicSqlSource(textSqlNode);
             } else {
-                return new RawSqlSource(script, parameterType);
+                return new RawSqlSource(script);
             }
         }
     }

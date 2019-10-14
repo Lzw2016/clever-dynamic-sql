@@ -6,20 +6,17 @@ import org.clever.dynamic.sql.mapping.SqlSource;
 import org.clever.dynamic.sql.scripting.xmltags.DynamicContext;
 import org.clever.dynamic.sql.scripting.xmltags.SqlNode;
 
-import java.util.HashMap;
-
 public class RawSqlSource implements SqlSource {
 
     private final SqlSource sqlSource;
 
-    public RawSqlSource(SqlNode rootSqlNode, Class<?> parameterType) {
-        this(getSql(rootSqlNode), parameterType);
+    public RawSqlSource(SqlNode rootSqlNode) {
+        this(getSql(rootSqlNode));
     }
 
-    public RawSqlSource(String sql, Class<?> parameterType) {
+    public RawSqlSource(String sql) {
         SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder();
-        Class<?> clazz = parameterType == null ? Object.class : parameterType;
-        sqlSource = sqlSourceParser.parse(sql, clazz, new HashMap<>());
+        sqlSource = sqlSourceParser.parse(sql);
     }
 
     private static String getSql(SqlNode rootSqlNode) {

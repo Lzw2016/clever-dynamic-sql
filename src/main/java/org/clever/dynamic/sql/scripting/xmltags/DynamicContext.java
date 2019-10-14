@@ -1,5 +1,6 @@
 package org.clever.dynamic.sql.scripting.xmltags;
 
+import lombok.Getter;
 import ognl.OgnlContext;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
@@ -49,6 +50,7 @@ public class DynamicContext {
     }
 
     static class ContextMap extends HashMap<String, Object> {
+        @Getter
         private final Object parameterMetaObject;
 
         public ContextMap(Object parameterMetaObject) {
@@ -62,7 +64,6 @@ public class DynamicContext {
     }
 
     static class ContextAccessor implements PropertyAccessor {
-
         @Override
         public Object getProperty(Map context, Object target, Object name) {
             Map map = (Map) target;
@@ -80,6 +81,7 @@ public class DynamicContext {
             return null;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public void setProperty(Map context, Object target, Object name, Object value) {
             Map<Object, Object> map = (Map<Object, Object>) target;

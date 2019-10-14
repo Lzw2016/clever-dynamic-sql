@@ -18,7 +18,7 @@ public class SqlSourceBuilder extends BaseBuilder {
         super();
     }
 
-    public SqlSource parse(String originalSql, Class<?> parameterType, Map<String, Object> additionalParameters) {
+    public SqlSource parse(String originalSql) {
         ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler();
         GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
         String sql = parser.parse(originalSql);
