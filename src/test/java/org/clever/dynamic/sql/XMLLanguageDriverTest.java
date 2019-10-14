@@ -45,23 +45,21 @@ public class XMLLanguageDriverTest {
         XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
         SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql, Map.class);
         Map<String, Object> params = new HashMap<>();
-        List<Integer> list = new ArrayList<Integer>() {{
-            add(1);
-            add(2);
-            add(3);
-            add(4);
-            add(5);
-            add(6);
-        }};
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+        list.add(6);
         params.put("list", list);
-        List<String> names = new ArrayList<String>() {{
-            add("name1");
-            add("name2");
-            add("name3");
-            add("name4");
-            add("name5");
-            add("name6");
-        }};
+        List<String> names = new ArrayList<>();
+        names.add("name1");
+        names.add("name2");
+        names.add("name3");
+        names.add("name4");
+        names.add("name5");
+        names.add("name6");
         params.put("names", names);
         params.put("orderBy", "a.aaa DESC, a.bbb ASC");
         BoundSql boundSql = sqlSource.getBoundSql(params);
