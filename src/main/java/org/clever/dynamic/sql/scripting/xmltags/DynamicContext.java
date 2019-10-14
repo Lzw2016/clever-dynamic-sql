@@ -4,6 +4,7 @@ import lombok.Getter;
 import ognl.OgnlContext;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
+import org.clever.dynamic.sql.exceptions.BuilderException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class DynamicContext {
         OgnlRuntime.setPropertyAccessor(ContextMap.class, new ContextAccessor());
     }
 
+    private final Map<?, ?> parameterMap;
     private final ContextMap bindings;
     private final StringJoiner sqlBuilder = new StringJoiner(" ");
     private int uniqueNumber = 0;
@@ -27,6 +29,11 @@ public class DynamicContext {
             bindings = new ContextMap(null);
         }
         bindings.put(PARAMETER_OBJECT_KEY, parameterObject);
+        if (parameterObject instanceof Map) {
+            parameterMap = (Map<?, ?>) parameterObject;
+        } else {
+            parameterMap = null;
+        }
     }
 
     public Map<String, Object> getBindings() {
@@ -34,6 +41,9 @@ public class DynamicContext {
     }
 
     public void bind(String name, Object value) {
+        if (parameterMap != null && parameterMap.containsKey(name)) {
+            throw new BuilderException("parameter bind error: sqlParameter “" + name + "” invalid，Please use other parameter names!");
+        }
         bindings.put(name, value);
     }
 
