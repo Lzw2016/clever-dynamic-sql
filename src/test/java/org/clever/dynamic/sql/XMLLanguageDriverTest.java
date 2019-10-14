@@ -1,6 +1,8 @@
 package org.clever.dynamic.sql;
 
 import lombok.extern.slf4j.Slf4j;
+import org.clever.dynamic.sql.domain.blog.Author;
+import org.clever.dynamic.sql.domain.blog.Section;
 import org.clever.dynamic.sql.mapping.BoundSql;
 import org.clever.dynamic.sql.mapping.SqlSource;
 import org.clever.dynamic.sql.scripting.xmltags.XMLLanguageDriver;
@@ -33,7 +35,7 @@ public class XMLLanguageDriverTest {
     @Test
     public void t2() {
         String sql = "<script>" +
-                "   select * from sql_script where id=#{__frch_item_1} and id in ( " +
+                "   select * from sql_script where id=#{__frch_item_1} and name=#{name} and id in ( " +
                 "       <foreach collection='list' item='item' separator=','>#{item}</foreach> " +
                 "   ) " +
                 "   and name in (" +
@@ -44,7 +46,8 @@ public class XMLLanguageDriverTest {
         XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
         SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql);
         Map<String, Object> params = new HashMap<>();
-        params.put("__frch_item_1", "value");
+        params.put("__frch_item_1", "value111111111111111111");
+        params.put("name", "lzw");
         List<Integer> list = new ArrayList<>();
         list.add(1);
         list.add(2);
@@ -66,5 +69,16 @@ public class XMLLanguageDriverTest {
         log.info("--> {}", boundSql.getSql());
     }
 
+    // TODO BoundSql 支持命名参数
+
     // TODO 参数是 对象
+    @Test
+    public void t3() {
+        Author author = new Author(1, "cbegin", "******", "cbegin@apache.org", "N/A", Section.NEWS);
+        String sql = "<script>select * from author where username=#{username}</script>";
+        XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql);
+        BoundSql boundSql = sqlSource.getBoundSql(author);
+        log.info("--> {}", boundSql.getSql());
+    }
 }
