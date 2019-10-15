@@ -1,9 +1,10 @@
 package org.clever.dynamic.sql.scripting.xmltags;
 
-import lombok.Getter;
 import ognl.OgnlContext;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
+import org.clever.dynamic.sql.reflection.MetaObject;
+import org.clever.dynamic.sql.utils.ConfigurationUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +23,8 @@ public class DynamicContext {
 
     public DynamicContext(Object parameterObject) {
         if (parameterObject != null && !(parameterObject instanceof Map)) {
-            bindings = new ContextMap(parameterObject);
+            MetaObject metaObject = ConfigurationUtils.newMetaObject(parameterObject);
+            bindings = new ContextMap(metaObject);
         } else {
             bindings = new ContextMap(null);
         }
@@ -50,16 +52,29 @@ public class DynamicContext {
     }
 
     static class ContextMap extends HashMap<String, Object> {
-        @Getter
-        private final Object parameterMetaObject;
+        private final MetaObject parameterMetaObject;
+        @SuppressWarnings("FieldCanBeLocal")
+        private final boolean fallbackParameterObject = false;
 
-        public ContextMap(Object parameterMetaObject) {
+        public ContextMap(MetaObject parameterMetaObject) {
             this.parameterMetaObject = parameterMetaObject;
         }
 
         @Override
         public Object get(Object key) {
-            return super.get(key);
+            String strKey = (String) key;
+            if (super.containsKey(strKey)) {
+                return super.get(strKey);
+            }
+            if (parameterMetaObject == null) {
+                return null;
+            }
+            if (fallbackParameterObject && !parameterMetaObject.hasGetter(strKey)) {
+                return parameterMetaObject.getOriginalObject();
+            } else {
+                // issue #61 do not modify the context when reading
+                return parameterMetaObject.getValue(strKey);
+            }
         }
     }
 

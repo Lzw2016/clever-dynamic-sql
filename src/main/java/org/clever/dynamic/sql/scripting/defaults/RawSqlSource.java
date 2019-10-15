@@ -27,6 +27,8 @@ public class RawSqlSource implements SqlSource {
 
     @Override
     public BoundSql getBoundSql(Object parameterObject) {
-        return sqlSource.getBoundSql(parameterObject);
+        BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
+        boundSql.getParameterValueList();
+        return boundSql;
     }
 }

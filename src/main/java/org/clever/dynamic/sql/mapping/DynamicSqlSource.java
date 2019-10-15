@@ -19,7 +19,8 @@ public class DynamicSqlSource implements SqlSource {
         SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder();
         SqlSource sqlSource = sqlSourceParser.parse(context.getSql());
         BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
-        context.getBindings().forEach(boundSql::setParameter);
+        context.getBindings().forEach(boundSql::setAdditionalParameter);
+        boundSql.getParameterValueList();
         return boundSql;
     }
 }
