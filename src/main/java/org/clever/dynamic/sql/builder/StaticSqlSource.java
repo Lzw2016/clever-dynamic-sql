@@ -17,8 +17,6 @@ public class StaticSqlSource implements SqlSource {
 
     @Override
     public BoundSql getBoundSql(Object parameterObject) {
-        BoundSql boundSql = new BoundSql(sql, parameterList, parameterObject);
-        boundSql.getParameterValueList();
-        return boundSql;
+        return new BoundSql(sql, parameterList, parameterObject);
     }
 }

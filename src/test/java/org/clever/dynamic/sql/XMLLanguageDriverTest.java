@@ -66,6 +66,7 @@ public class XMLLanguageDriverTest {
         params.put("names", names);
         params.put("orderBy", "a.aaa DESC, a.bbb ASC");
         BoundSql boundSql = sqlSource.getBoundSql(params);
+        boundSql.getParameterValueList();
         log.info("--> {}", boundSql.getSql());
     }
 
@@ -79,6 +80,7 @@ public class XMLLanguageDriverTest {
         XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
         SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql);
         BoundSql boundSql = sqlSource.getBoundSql(author);
+        boundSql.getParameterValueList();
         log.info("--> {}", boundSql.getSql());
     }
 }
