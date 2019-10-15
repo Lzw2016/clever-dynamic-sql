@@ -23,12 +23,21 @@ public class SqlSourceBuilder extends BaseBuilder {
         ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler();
         GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
         String sql = parser.parse(originalSql);
-        return new StaticSqlSource(sql, handler.getParameterList());
+        parser = new GenericTokenParser("#{", "}", new ParameterMappingTokenHandler() {
+            @Override
+            public String handleToken(String content) {
+                String parameterName = buildParameterMapping(content);
+                parameterList.add(parameterName);
+                return ":" + parameterName;
+            }
+        });
+        String namedParameterSql = parser.parse(originalSql);
+        return new StaticSqlSource(sql, namedParameterSql, handler.getParameterList());
     }
 
     private static class ParameterMappingTokenHandler extends BaseBuilder implements TokenHandler {
         @Getter
-        private final List<String> parameterList = new ArrayList<>();
+        protected final List<String> parameterList = new ArrayList<>();
 
         public ParameterMappingTokenHandler() {
         }
@@ -40,7 +49,7 @@ public class SqlSourceBuilder extends BaseBuilder {
             return "?";
         }
 
-        private String buildParameterMapping(String content) {
+        protected String buildParameterMapping(String content) {
             Map<String, String> propertiesMap = parseParameterMapping(content);
             String property = null;
             for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {

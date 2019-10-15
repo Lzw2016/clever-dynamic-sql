@@ -19,7 +19,12 @@ public class BoundSql {
     @Getter
     private final String sql;
     /**
-     * 参数名称列表(有顺序)
+     * 参数名称形式的sql
+     */
+    @Getter
+    private final String namedParameterSql;
+    /**
+     * Sql参数名称列表(有顺序)
      */
     @Getter
     private final List<String> parameterList;
@@ -32,40 +37,53 @@ public class BoundSql {
      */
     private final MetaObject metaParameters;
     /**
-     * 参数值列表(有顺序)
+     * Sql参数值列表(有顺序)
      */
     private List<Object> parameterValueList;
+    /**
+     * Sql参数Map集合
+     */
+    private Map<String, Object> parameterMap;
 
-    public BoundSql(String sql, List<String> parameterList, Object parameterObject) {
+    public BoundSql(String sql, String namedParameterSql, List<String> parameterList, Object parameterObject) {
         this.sql = sql;
+        this.namedParameterSql = namedParameterSql;
         this.parameterList = parameterList;
         this.parameterObject = parameterObject;
         this.additionalParameters = new HashMap<>();
         this.metaParameters = ConfigurationUtils.newMetaObject(additionalParameters);
     }
 
-    public boolean hasAdditionalParameter(String name) {
-        String paramName = new PropertyTokenizer(name).getName();
-        return additionalParameters.containsKey(paramName);
-    }
-
-    public void setAdditionalParameter(String name, Object value) {
-        metaParameters.setValue(name, value);
-    }
-
-    public Object getAdditionalParameter(String name) {
-        return metaParameters.getValue(name);
-    }
-
+    /**
+     * 参数值列表(有顺序)
+     */
     public List<Object> getParameterValueList() {
         if (parameterValueList != null) {
             return parameterValueList;
         }
+        initSqlParameter();
+        return parameterValueList;
+    }
+
+    /**
+     * Sql参数Map集合
+     */
+    public Map<String, Object> getParameterMap() {
+        if (parameterMap != null) {
+            return parameterMap;
+        }
+        initSqlParameter();
+        return parameterMap;
+    }
+
+    private void initSqlParameter() {
         if (parameterList == null || parameterList.isEmpty()) {
             parameterValueList = Collections.emptyList();
-            return parameterValueList;
+            parameterMap = Collections.emptyMap();
+            return;
         }
         parameterValueList = new ArrayList<>(parameterList.size());
+        parameterMap = new HashMap<>(parameterList.size());
         parameterList.forEach(name -> {
             Object value;
             if (hasAdditionalParameter(name)) {
@@ -77,7 +95,20 @@ public class BoundSql {
                 value = metaObject.getValue(name);
             }
             parameterValueList.add(value);
+            parameterMap.put(name, value);
         });
-        return parameterValueList;
+    }
+
+    private boolean hasAdditionalParameter(String name) {
+        String paramName = new PropertyTokenizer(name).getName();
+        return additionalParameters.containsKey(paramName);
+    }
+
+    void setAdditionalParameter(String name, Object value) {
+        metaParameters.setValue(name, value);
+    }
+
+    private Object getAdditionalParameter(String name) {
+        return metaParameters.getValue(name);
     }
 }
