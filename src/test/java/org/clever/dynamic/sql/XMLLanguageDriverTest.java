@@ -148,6 +148,6 @@ public class XMLLanguageDriverTest {
             boundSql.getParameterValueList();
         }
         final long end = System.currentTimeMillis();
-        log.info("--> 耗时 {}s, 速度： {}次/ms", (end - start) / 1000.0, count / (end - start));
+        log.info("--> 耗时 {}s, 速度： {}次/ms", (end - start) / 1000.0, count * 1.0 / (end - start));
     }
 }
