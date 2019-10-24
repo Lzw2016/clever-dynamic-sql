@@ -3,12 +3,12 @@ package org.clever.dynamic.sql.scripting.xmltags;
 import ognl.OgnlContext;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
+import org.apache.commons.lang3.StringUtils;
 import org.clever.dynamic.sql.reflection.MetaObject;
 import org.clever.dynamic.sql.utils.ConfigurationUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DynamicContext {
     public static final String PARAMETER_OBJECT_KEY = "_parameter";
@@ -20,6 +20,8 @@ public class DynamicContext {
     private final ContextMap bindings;
     private final StringJoiner sqlBuilder = new StringJoiner(" ");
     private int uniqueNumber = 0;
+    private final Set<String> parameterExpressionSet = new LinkedHashSet<>();
+    private final Set<String> parameterVar = new LinkedHashSet<>();
 
     public DynamicContext(Object parameterObject) {
         if (parameterObject != null && !(parameterObject instanceof Map)) {
@@ -49,6 +51,22 @@ public class DynamicContext {
 
     public int getUniqueNumber() {
         return uniqueNumber++;
+    }
+
+    public void addParameterExpression(String expression) {
+        if (StringUtils.isNotBlank(expression)) {
+            parameterExpressionSet.add(expression);
+        }
+    }
+
+    public Set<String> getParameterExpressionSet() {
+        return Collections.unmodifiableSet(parameterExpressionSet.stream().filter(str -> !parameterVar.contains(str)).collect(Collectors.toSet()));
+    }
+
+    public void addParameterVar(String var) {
+        if (StringUtils.isNotBlank(var)) {
+            parameterVar.add(var);
+        }
     }
 
     static class ContextMap extends HashMap<String, Object> {

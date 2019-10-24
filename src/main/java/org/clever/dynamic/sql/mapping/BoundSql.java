@@ -44,6 +44,11 @@ public class BoundSql {
      * Sql参数Map集合
      */
     private Map<String, Object> parameterMap;
+    /**
+     * 动态sql中的表达式变量
+     */
+    @Getter
+    private final Set<String> parameterExpressionSet = new LinkedHashSet<>();
 
     public BoundSql(String sql, String namedParameterSql, List<String> parameterList, Object parameterObject) {
         this.sql = sql;

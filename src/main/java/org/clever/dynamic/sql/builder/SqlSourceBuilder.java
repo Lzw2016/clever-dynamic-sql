@@ -6,8 +6,10 @@ import org.clever.dynamic.sql.exceptions.BuilderException;
 import org.clever.dynamic.sql.mapping.SqlSource;
 import org.clever.dynamic.sql.parsing.GenericTokenParser;
 import org.clever.dynamic.sql.parsing.TokenHandler;
+import org.clever.dynamic.sql.scripting.xmltags.DynamicContext;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +17,15 @@ public class SqlSourceBuilder extends BaseBuilder {
 
     private static final String PARAMETER_PROPERTIES = "javaType,jdbcType,mode,numericScale,resultMap,typeHandler,jdbcTypeName";
 
-    public SqlSourceBuilder() {
+    private final DynamicContext context;
+
+    public SqlSourceBuilder(DynamicContext context) {
         super();
+        if (context != null) {
+            this.context = context;
+        } else {
+            this.context = new DynamicContext(Collections.emptyMap());
+        }
     }
 
     public SqlSource parse(String originalSql) {
@@ -26,6 +35,7 @@ public class SqlSourceBuilder extends BaseBuilder {
         parser = new GenericTokenParser("#{", "}", new ParameterMappingTokenHandler() {
             @Override
             public String handleToken(String content) {
+                context.addParameterExpression(content);
                 String parameterName = buildParameterMapping(content);
                 parameterList.add(parameterName);
                 return ":" + parameterName;

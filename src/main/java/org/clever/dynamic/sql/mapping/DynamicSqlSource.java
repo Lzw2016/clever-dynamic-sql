@@ -16,10 +16,11 @@ public class DynamicSqlSource implements SqlSource {
     public BoundSql getBoundSql(Object parameterObject) {
         DynamicContext context = new DynamicContext(parameterObject);
         rootSqlNode.apply(context);
-        SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder();
+        SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder(context);
         SqlSource sqlSource = sqlSourceParser.parse(context.getSql());
         BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
         context.getBindings().forEach(boundSql::setAdditionalParameter);
+        context.getParameterExpressionSet().forEach(srt -> boundSql.getParameterExpressionSet().add(srt));
         return boundSql;
     }
 }

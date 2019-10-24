@@ -15,7 +15,7 @@ public class RawSqlSource implements SqlSource {
     }
 
     public RawSqlSource(String sql) {
-        SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder();
+        SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder(null);
         sqlSource = sqlSourceParser.parse(sql);
     }
 

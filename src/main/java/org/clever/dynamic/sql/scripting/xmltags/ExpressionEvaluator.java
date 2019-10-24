@@ -1,5 +1,6 @@
 package org.clever.dynamic.sql.scripting.xmltags;
 
+import lombok.extern.slf4j.Slf4j;
 import org.clever.dynamic.sql.exceptions.BuilderException;
 
 import java.lang.reflect.Array;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class ExpressionEvaluator {
 
     public boolean evaluateBoolean(String expression, Object parameterObject) {
@@ -24,7 +26,8 @@ public class ExpressionEvaluator {
     public Iterable<?> evaluateIterable(String expression, Object parameterObject) {
         Object value = OgnlCache.getValue(expression, parameterObject);
         if (value == null) {
-            throw new BuilderException("The expression '" + expression + "' evaluated to a null value.");
+            log.warn("The expression '{}' evaluated to a null value.", expression);
+            return new ArrayList<>(0);
         }
         if (value instanceof Iterable) {
             return (Iterable<?>) value;

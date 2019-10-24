@@ -12,6 +12,8 @@ public class VarDeclSqlNode implements SqlNode {
 
     @Override
     public boolean apply(DynamicContext context) {
+        context.addParameterExpression(expression);
+        context.addParameterVar(name);
         final Object value = OgnlCache.getValue(expression, context.getBindings());
         context.bind(name, value);
         return true;

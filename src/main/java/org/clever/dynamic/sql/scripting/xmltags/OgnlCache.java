@@ -1,12 +1,13 @@
 package org.clever.dynamic.sql.scripting.xmltags;
 
+import lombok.extern.slf4j.Slf4j;
 import ognl.Ognl;
 import ognl.OgnlException;
-import org.clever.dynamic.sql.exceptions.BuilderException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public final class OgnlCache {
 
     private static final OgnlMemberAccess MEMBER_ACCESS = new OgnlMemberAccess();
@@ -17,12 +18,20 @@ public final class OgnlCache {
         // Prevent Instantiation of Static Class
     }
 
+    @SuppressWarnings("TryWithIdenticalCatches")
     public static Object getValue(String expression, Object root) {
         try {
             Map context = Ognl.createDefaultContext(root, MEMBER_ACCESS, CLASS_RESOLVER, null);
             return Ognl.getValue(parseExpression(expression), context, root);
         } catch (OgnlException e) {
-            throw new BuilderException("Error evaluating expression '" + expression + "'. Cause: " + e, e);
+            log.warn("Error evaluating expression '{}'.", expression);
+            // log.warn("Error evaluating expression '{}'. Cause: ", expression, e);
+            // throw new BuilderException("Error evaluating expression '" + expression + "'. Cause: " + e, e);
+            return null;
+        } catch (Throwable e) {
+            log.warn("Error evaluating expression '{}'.", expression);
+            // log.warn("Error evaluating expression '{}'. Cause: ", expression, e);
+            return null;
         }
     }
 

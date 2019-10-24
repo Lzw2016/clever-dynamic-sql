@@ -13,6 +13,7 @@ public class IfSqlNode implements SqlNode {
 
     @Override
     public boolean apply(DynamicContext context) {
+        context.addParameterExpression(test);
         if (evaluator.evaluateBoolean(test, context.getBindings())) {
             contents.apply(context);
             return true;
