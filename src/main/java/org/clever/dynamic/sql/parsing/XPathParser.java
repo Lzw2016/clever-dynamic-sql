@@ -19,12 +19,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * XML文档对应的xpath解析器
+ */
 public class XPathParser {
-
+    /**
+     * 解析后的XML文档对象
+     */
     private final Document document;
+    /**
+     * 是否控制DTD验证XML文档
+     */
     private boolean validation;
+    /**
+     * XML Entity 解析器
+     */
     private EntityResolver entityResolver;
+    /**
+     * TODO ???
+     */
     private Properties variables;
+    /**
+     * XPath提供对XPath计算环境和表达式的访问
+     */
     private XPath xpath;
 
     public XPathParser(String xml) {
@@ -67,6 +84,11 @@ public class XPathParser {
         this.document = document;
     }
 
+    /**
+     * @param xml        XML文本内容
+     * @param validation 是否验证XML文档格式
+     * @param variables  TODO ？？
+     */
     public XPathParser(String xml, boolean validation, Properties variables) {
         commonConstructor(validation, variables, null);
         this.document = createDocument(new InputSource(new StringReader(xml)));
@@ -182,10 +204,21 @@ public class XPathParser {
         return xnodes;
     }
 
+    /**
+     * 根据xpath表达式得到XML文档节点
+     *
+     * @param expression xpath表达式
+     */
     public XNode evalNode(String expression) {
         return evalNode(document, expression);
     }
 
+    /**
+     * 根据xpath表达式得到XML文档节点
+     *
+     * @param root       根文档对象
+     * @param expression xpath表达式
+     */
     public XNode evalNode(Object root, String expression) {
         Node node = (Node) evaluate(expression, root, XPathConstants.NODE);
         if (node == null) {

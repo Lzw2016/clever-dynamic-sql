@@ -7,6 +7,9 @@ import org.clever.dynamic.sql.utils.ConfigurationUtils;
 
 import java.util.*;
 
+/**
+ * 动态SQL脚本信息
+ */
 public class BoundSql {
     /**
      * 原始参数对象
@@ -14,12 +17,12 @@ public class BoundSql {
     @Getter
     private final Object parameterObject;
     /**
-     * 生成的SQL语句
+     * 生成的SQL语句("?" 参数形式)
      */
     @Getter
     private final String sql;
     /**
-     * 参数名称形式的sql
+     * 生成的SQL语句(":param" 参数形式)
      */
     @Getter
     private final String namedParameterSql;
@@ -45,6 +48,12 @@ public class BoundSql {
      */
     private Map<String, Object> parameterMap;
 
+    /**
+     * @param sql               生成的SQL语句("?" 参数形式)
+     * @param namedParameterSql 生成的SQL语句(":param" 参数形式)
+     * @param parameterList     Sql参数名称列表(有顺序)
+     * @param parameterObject   原始参数对象
+     */
     public BoundSql(String sql, String namedParameterSql, List<String> parameterList, Object parameterObject) {
         this.sql = sql;
         this.namedParameterSql = namedParameterSql;

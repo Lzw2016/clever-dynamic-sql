@@ -8,14 +8,40 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * XML文档节点
+ */
 public class XNode {
+    /**
+     * XML文档节点
+     */
     private final Node node;
+    /**
+     * XML文档节点名称
+     */
     private final String name;
+    /**
+     * XML文档节点内容
+     */
     private final String body;
+    /**
+     * XML文档节点属性
+     */
     private final Properties attributes;
+    /**
+     * TODO ？？
+     */
     private final Properties variables;
+    /**
+     * xpath解析器
+     */
     private final XPathParser xpathParser;
 
+    /**
+     * @param xpathParser xpath解析器
+     * @param node        XML文档节点
+     * @param variables   TODO ？？
+     */
     public XNode(XPathParser xpathParser, Node node, Properties variables) {
         this.xpathParser = xpathParser;
         this.node = node;

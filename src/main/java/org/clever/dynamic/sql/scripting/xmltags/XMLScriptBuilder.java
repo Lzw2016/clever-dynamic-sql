@@ -14,12 +14,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ */
 public class XMLScriptBuilder extends BaseBuilder {
 
     private final XNode context;
     private boolean isDynamic;
     private final Map<String, NodeHandler> nodeHandlerMap = new HashMap<>();
 
+    /**
+     *
+     * @param context
+     */
     public XMLScriptBuilder(XNode context) {
         super();
         this.context = context;
