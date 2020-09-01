@@ -76,7 +76,7 @@ where
 
 # ------------------------------------------------------------------------------------- <!--#t06#-->
 
-<bind name='pattern' value='title4' />
+<bind name='pattern' value='"title4"' />
 select * from sql_script
 where
     id=#{id}

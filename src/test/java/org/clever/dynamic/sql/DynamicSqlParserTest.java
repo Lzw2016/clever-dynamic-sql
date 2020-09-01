@@ -190,7 +190,7 @@ public class DynamicSqlParserTest {
         log.info("--> {}", deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
-        log.info("--> {}", boundSql.getParameterMap()); // TODO bind 参数 pattern 没有值
+        log.info("--> {}", boundSql.getParameterMap());
     }
 
     @Test
