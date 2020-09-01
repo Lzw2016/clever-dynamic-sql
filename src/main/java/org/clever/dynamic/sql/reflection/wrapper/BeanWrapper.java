@@ -1,6 +1,10 @@
 package org.clever.dynamic.sql.reflection.wrapper;
 
-import org.clever.dynamic.sql.reflection.*;
+import org.clever.dynamic.sql.exception.ReflectionException;
+import org.clever.dynamic.sql.reflection.ExceptionUtil;
+import org.clever.dynamic.sql.reflection.MetaClass;
+import org.clever.dynamic.sql.reflection.MetaObject;
+import org.clever.dynamic.sql.reflection.SystemMetaObject;
 import org.clever.dynamic.sql.reflection.factory.ObjectFactory;
 import org.clever.dynamic.sql.reflection.invoker.Invoker;
 import org.clever.dynamic.sql.reflection.property.PropertyTokenizer;
@@ -8,7 +12,6 @@ import org.clever.dynamic.sql.reflection.property.PropertyTokenizer;
 import java.util.List;
 
 public class BeanWrapper extends BaseWrapper {
-
     private final Object object;
     private final MetaClass metaClass;
 
@@ -178,5 +181,4 @@ public class BeanWrapper extends BaseWrapper {
     public <E> void addAll(List<E> list) {
         throw new UnsupportedOperationException();
     }
-
 }

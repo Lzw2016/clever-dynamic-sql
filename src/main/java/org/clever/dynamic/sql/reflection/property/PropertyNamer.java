@@ -1,14 +1,11 @@
 package org.clever.dynamic.sql.reflection.property;
 
-
-import org.clever.dynamic.sql.reflection.ReflectionException;
+import org.clever.dynamic.sql.exception.ReflectionException;
 
 import java.util.Locale;
 
 public final class PropertyNamer {
-
     private PropertyNamer() {
-        // Prevent Instantiation of Static Class
     }
 
     public static String methodToProperty(String name) {

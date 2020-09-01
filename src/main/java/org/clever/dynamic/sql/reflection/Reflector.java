@@ -1,5 +1,6 @@
 package org.clever.dynamic.sql.reflection;
 
+import org.clever.dynamic.sql.exception.ReflectionException;
 import org.clever.dynamic.sql.reflection.invoker.GetFieldInvoker;
 import org.clever.dynamic.sql.reflection.invoker.Invoker;
 import org.clever.dynamic.sql.reflection.invoker.MethodInvoker;
@@ -11,7 +12,6 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class Reflector {
-
     private final Class<?> type;
     private final String[] readablePropertyNames;
     private final String[] writablePropertyNames;
@@ -21,7 +21,7 @@ public class Reflector {
     private final Map<String, Class<?>> getTypes = new HashMap<>();
     private Constructor<?> defaultConstructor;
 
-    private Map<String, String> caseInsensitivePropertyMap = new HashMap<>();
+    private final Map<String, String> caseInsensitivePropertyMap = new HashMap<>();
 
     public Reflector(Class<?> clazz) {
         type = clazz;
@@ -41,14 +41,16 @@ public class Reflector {
 
     private void addDefaultConstructor(Class<?> clazz) {
         Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-        Arrays.stream(constructors).filter(constructor -> constructor.getParameterTypes().length == 0)
-                .findAny().ifPresent(constructor -> this.defaultConstructor = constructor);
+        Arrays.stream(constructors)
+                .filter(constructor -> constructor.getParameterTypes().length == 0).findAny()
+                .ifPresent(constructor -> this.defaultConstructor = constructor);
     }
 
     private void addGetMethods(Class<?> clazz) {
         Map<String, List<Method>> conflictingGetters = new HashMap<>();
         Method[] methods = getClassMethods(clazz);
-        Arrays.stream(methods).filter(m -> m.getParameterTypes().length == 0 && PropertyNamer.isGetter(m.getName()))
+        Arrays.stream(methods)
+                .filter(m -> m.getParameterTypes().length == 0 && PropertyNamer.isGetter(m.getName()))
                 .forEach(m -> addMethodConflict(conflictingGetters, PropertyNamer.methodToProperty(m.getName()), m));
         resolveGetterConflicts(conflictingGetters);
     }
@@ -73,16 +75,17 @@ public class Reflector {
                     } else if (candidate.getName().startsWith("is")) {
                         winner = candidate;
                     }
-                } else if (candidateType.isAssignableFrom(winnerType)) {
-                    // OK getter type is descendant
-                } else if (winnerType.isAssignableFrom(candidateType)) {
-                    winner = candidate;
-                } else {
-                    throw new ReflectionException(
-                            "Illegal overloaded getter method with ambiguous type for property "
-                                    + propName + " in class " + winner.getDeclaringClass()
-                                    + ". This breaks the JavaBeans specification and can cause unpredictable results.");
-                }
+                } else //noinspection StatementWithEmptyBody
+                    if (candidateType.isAssignableFrom(winnerType)) {
+                        // ok getter type is descendant
+                    } else if (winnerType.isAssignableFrom(candidateType)) {
+                        winner = candidate;
+                    } else {
+                        throw new ReflectionException(
+                                "Illegal overloaded getter method with ambiguous type for property "
+                                        + propName + " in class " + winner.getDeclaringClass()
+                                        + ". This breaks the JavaBeans specification and can cause unpredictable results.");
+                    }
             }
             addGetMethod(propName, winner);
         }
@@ -99,7 +102,8 @@ public class Reflector {
     private void addSetMethods(Class<?> clazz) {
         Map<String, List<Method>> conflictingSetters = new HashMap<>();
         Method[] methods = getClassMethods(clazz);
-        Arrays.stream(methods).filter(m -> m.getParameterTypes().length == 1 && PropertyNamer.isSetter(m.getName()))
+        Arrays.stream(methods)
+                .filter(m -> m.getParameterTypes().length == 1 && PropertyNamer.isSetter(m.getName()))
                 .forEach(m -> addMethodConflict(conflictingSetters, PropertyNamer.methodToProperty(m.getName()), m));
         resolveSetterConflicts(conflictingSetters);
     }
@@ -131,7 +135,7 @@ public class Reflector {
                     }
                 }
             }
-            if (match == null) {
+            if (match == null && exception != null) {
                 throw exception;
             } else {
                 addSetMethod(propName, match);
@@ -150,9 +154,10 @@ public class Reflector {
         } else if (paramType2.isAssignableFrom(paramType1)) {
             return setter1;
         }
-        throw new ReflectionException("Ambiguous setters defined for property '" + property + "' in class '"
-                + setter2.getDeclaringClass() + "' with types '" + paramType1.getName() + "' and '"
-                + paramType2.getName() + "'.");
+        throw new ReflectionException(
+                "Ambiguous setters defined for property '" + property
+                        + "' in class '" + setter2.getDeclaringClass()
+                        + "' with types '" + paramType1.getName() + "' and '" + paramType2.getName() + "'.");
     }
 
     private void addSetMethod(String name, Method method) {
@@ -272,9 +277,7 @@ public class Reflector {
     private String getSignature(Method method) {
         StringBuilder sb = new StringBuilder();
         Class<?> returnType = method.getReturnType();
-        if (returnType != null) {
-            sb.append(returnType.getName()).append('#');
-        }
+        sb.append(returnType.getName()).append('#');
         sb.append(method.getName());
         Class<?>[] parameters = method.getParameterTypes();
         for (int i = 0; i < parameters.length; i++) {
@@ -391,7 +394,7 @@ public class Reflector {
      * @return True if the object has a writable property by the name
      */
     public boolean hasSetter(String propertyName) {
-        return setMethods.keySet().contains(propertyName);
+        return setMethods.containsKey(propertyName);
     }
 
     /**
@@ -401,7 +404,7 @@ public class Reflector {
      * @return True if the object has a readable property by the name
      */
     public boolean hasGetter(String propertyName) {
-        return getMethods.keySet().contains(propertyName);
+        return getMethods.containsKey(propertyName);
     }
 
     public String findPropertyName(String name) {

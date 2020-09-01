@@ -1,6 +1,7 @@
 package org.clever.dynamic.sql.reflection.factory;
 
-import org.clever.dynamic.sql.reflection.ReflectionException;
+
+import org.clever.dynamic.sql.exception.ReflectionException;
 import org.clever.dynamic.sql.reflection.Reflector;
 
 import java.io.Serializable;
@@ -9,7 +10,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DefaultObjectFactory implements ObjectFactory, Serializable {
-
     private static final long serialVersionUID = -8855120656740914948L;
 
     @Override
@@ -21,8 +21,12 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     @Override
     public <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
         Class<?> classToCreate = resolveInterface(type);
-        // we know types are assignable
         return (T) instantiateClass(classToCreate, constructorArgTypes, constructorArgs);
+    }
+
+    @Override
+    public <T> boolean isCollection(Class<T> type) {
+        return Collection.class.isAssignableFrom(type);
     }
 
     private <T> T instantiateClass(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
@@ -41,22 +45,26 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
                     }
                 }
             }
-            constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[constructorArgTypes.size()]));
+            constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[0]));
             try {
-                return constructor.newInstance(constructorArgs.toArray(new Object[constructorArgs.size()]));
+                return constructor.newInstance(constructorArgs.toArray(new Object[0]));
             } catch (IllegalAccessException e) {
                 if (Reflector.canControlMemberAccessible()) {
                     constructor.setAccessible(true);
-                    return constructor.newInstance(constructorArgs.toArray(new Object[constructorArgs.size()]));
+                    return constructor.newInstance(constructorArgs.toArray(new Object[0]));
                 } else {
                     throw e;
                 }
             }
         } catch (Exception e) {
-            String argTypes = Optional.ofNullable(constructorArgTypes).orElseGet(Collections::emptyList)
-                    .stream().map(Class::getSimpleName).collect(Collectors.joining(","));
-            String argValues = Optional.ofNullable(constructorArgs).orElseGet(Collections::emptyList)
-                    .stream().map(String::valueOf).collect(Collectors.joining(","));
+            String argTypes = Optional.ofNullable(constructorArgTypes)
+                    .orElseGet(Collections::emptyList)
+                    .stream().map(Class::getSimpleName)
+                    .collect(Collectors.joining(","));
+            String argValues = Optional.ofNullable(constructorArgs)
+                    .orElseGet(Collections::emptyList)
+                    .stream().map(String::valueOf)
+                    .collect(Collectors.joining(","));
             throw new ReflectionException("Error instantiating " + type + " with invalid types (" + argTypes + ") or values (" + argValues + "). Cause: " + e, e);
         }
     }
@@ -67,7 +75,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
             classToCreate = ArrayList.class;
         } else if (type == Map.class) {
             classToCreate = HashMap.class;
-        } else if (type == SortedSet.class) { // issue #510 Collections Support
+        } else if (type == SortedSet.class) {
             classToCreate = TreeSet.class;
         } else if (type == Set.class) {
             classToCreate = HashSet.class;
@@ -75,10 +83,5 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
             classToCreate = type;
         }
         return classToCreate;
-    }
-
-    @Override
-    public <T> boolean isCollection(Class<T> type) {
-        return Collection.class.isAssignableFrom(type);
     }
 }

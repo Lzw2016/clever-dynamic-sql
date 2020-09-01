@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MapWrapper extends BaseWrapper {
-
     private final Map<String, Object> map;
 
     public MapWrapper(MetaObject metaObject, Map<String, Object> map) {
@@ -45,12 +44,12 @@ public class MapWrapper extends BaseWrapper {
 
     @Override
     public String[] getGetterNames() {
-        return map.keySet().toArray(new String[map.keySet().size()]);
+        return map.keySet().toArray(new String[0]);
     }
 
     @Override
     public String[] getSetterNames() {
-        return map.keySet().toArray(new String[map.keySet().size()]);
+        return map.keySet().toArray(new String[0]);
     }
 
     @Override

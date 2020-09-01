@@ -1,17 +1,36 @@
 package org.clever.dynamic.sql.parsing;
 
+/**
+ * 常规 Token 解析器
+ */
 public class GenericTokenParser {
-
+    /**
+     * Token前缀
+     */
     private final String openToken;
+    /**
+     * Token后缀
+     */
     private final String closeToken;
+    /**
+     * Token处理器
+     */
     private final TokenHandler handler;
 
+    /**
+     * @param openToken  Token前缀
+     * @param closeToken Token后缀
+     * @param handler    Token处理器
+     */
     public GenericTokenParser(String openToken, String closeToken, TokenHandler handler) {
         this.openToken = openToken;
         this.closeToken = closeToken;
         this.handler = handler;
     }
 
+    /**
+     * 解析 Token
+     */
     public String parse(String text) {
         if (text == null || text.isEmpty()) {
             return "";

@@ -1,7 +1,7 @@
 package org.clever.dynamic.sql.reflection.wrapper;
 
+import org.clever.dynamic.sql.exception.ReflectionException;
 import org.clever.dynamic.sql.reflection.MetaObject;
-import org.clever.dynamic.sql.reflection.ReflectionException;
 
 public class DefaultObjectWrapperFactory implements ObjectWrapperFactory {
 

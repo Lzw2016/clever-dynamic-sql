@@ -6,7 +6,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class MethodInvoker implements Invoker {
-
     private final Class<?> type;
     private final Method method;
 

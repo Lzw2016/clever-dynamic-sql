@@ -2,21 +2,28 @@ package org.clever.dynamic.sql.builder;
 
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.clever.dynamic.sql.exceptions.BuilderException;
-import org.clever.dynamic.sql.mapping.SqlSource;
+import org.clever.dynamic.sql.exception.BuilderException;
+import org.clever.dynamic.sql.node.DynamicContext;
 import org.clever.dynamic.sql.parsing.GenericTokenParser;
 import org.clever.dynamic.sql.parsing.TokenHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class SqlSourceBuilder extends BaseBuilder {
-
     private static final String PARAMETER_PROPERTIES = "javaType,jdbcType,mode,numericScale,resultMap,typeHandler,jdbcTypeName";
 
-    public SqlSourceBuilder() {
+    private final DynamicContext context;
+
+    public SqlSourceBuilder(DynamicContext context) {
         super();
+        if (context != null) {
+            this.context = context;
+        } else {
+            this.context = new DynamicContext(Collections.emptyMap());
+        }
     }
 
     public SqlSource parse(String originalSql) {
@@ -26,6 +33,7 @@ public class SqlSourceBuilder extends BaseBuilder {
         parser = new GenericTokenParser("#{", "}", new ParameterMappingTokenHandler() {
             @Override
             public String handleToken(String content) {
+                context.addParameterExpression(content);
                 String parameterName = buildParameterMapping(content);
                 parameterList.add(parameterName);
                 return ":" + parameterName;

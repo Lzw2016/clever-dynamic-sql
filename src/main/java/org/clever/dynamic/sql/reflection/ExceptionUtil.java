@@ -4,9 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 
 public class ExceptionUtil {
-
     private ExceptionUtil() {
-        // Prevent Instantiation
     }
 
     public static Throwable unwrapThrowable(Throwable wrapped) {

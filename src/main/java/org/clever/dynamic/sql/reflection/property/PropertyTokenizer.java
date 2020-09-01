@@ -8,13 +8,13 @@ public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
     private String index;
     private final String children;
 
-    public PropertyTokenizer(String fullname) {
-        int delim = fullname.indexOf('.');
+    public PropertyTokenizer(String fullName) {
+        int delim = fullName.indexOf('.');
         if (delim > -1) {
-            name = fullname.substring(0, delim);
-            children = fullname.substring(delim + 1);
+            name = fullName.substring(0, delim);
+            children = fullName.substring(delim + 1);
         } else {
-            name = fullname;
+            name = fullName;
             children = null;
         }
         indexedName = name;

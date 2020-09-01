@@ -1,5 +1,6 @@
 package org.clever.dynamic.sql.reflection;
 
+import org.clever.dynamic.sql.reflection.factory.DefaultObjectFactory;
 import org.clever.dynamic.sql.reflection.factory.ObjectFactory;
 import org.clever.dynamic.sql.reflection.property.PropertyTokenizer;
 import org.clever.dynamic.sql.reflection.wrapper.*;
@@ -9,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 public class MetaObject {
+    private static final ObjectFactory Object_Factory = new DefaultObjectFactory();
+    private static final ObjectWrapperFactory Object_Wrapper_Factory = new DefaultObjectWrapperFactory();
+    private static final ReflectorFactory Reflector_Factory = new DefaultReflectorFactory();
 
     private final Object originalObject;
     private final ObjectWrapper objectWrapper;
@@ -16,7 +20,7 @@ public class MetaObject {
     private final ObjectWrapperFactory objectWrapperFactory;
     private final ReflectorFactory reflectorFactory;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private MetaObject(Object object, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory) {
         this.originalObject = object;
         this.objectFactory = objectFactory;
@@ -34,6 +38,10 @@ public class MetaObject {
         } else {
             this.objectWrapper = new BeanWrapper(this, object);
         }
+    }
+
+    public static MetaObject newMetaObject(Object object) {
+        return MetaObject.forObject(object, Object_Factory, Object_Wrapper_Factory, Reflector_Factory);
     }
 
     public static MetaObject forObject(Object object, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory) {

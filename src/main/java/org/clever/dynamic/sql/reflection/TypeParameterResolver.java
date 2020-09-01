@@ -4,7 +4,6 @@ import java.lang.reflect.*;
 import java.util.Arrays;
 
 public class TypeParameterResolver {
-
     /**
      * @return The field type as {@link Type}. If it has type parameters in the declaration,<br>
      * they will be resolved to the actual runtime {@link Type}s.
@@ -68,6 +67,7 @@ public class TypeParameterResolver {
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     private static ParameterizedType resolveParameterizedType(ParameterizedType parameterizedType, Type srcType, Class<?> declaringClass) {
         Class<?> rawType = (Class<?>) parameterizedType.getRawType();
         Type[] typeArgs = parameterizedType.getActualTypeArguments();
@@ -92,6 +92,7 @@ public class TypeParameterResolver {
         return new WildcardTypeImpl(lowerBounds, upperBounds);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     private static Type[] resolveWildcardTypeBounds(Type[] bounds, Type srcType, Class<?> declaringClass) {
         Type[] result = new Type[bounds.length];
         for (int i = 0; i < bounds.length; i++) {
@@ -194,11 +195,9 @@ public class TypeParameterResolver {
     }
 
     static class ParameterizedTypeImpl implements ParameterizedType {
-        private Class<?> rawType;
-
-        private Type ownerType;
-
-        private Type[] actualTypeArguments;
+        private final Class<?> rawType;
+        private final Type ownerType;
+        private final Type[] actualTypeArguments;
 
         public ParameterizedTypeImpl(Class<?> rawType, Type ownerType, Type[] actualTypeArguments) {
             super();
@@ -229,9 +228,8 @@ public class TypeParameterResolver {
     }
 
     static class WildcardTypeImpl implements WildcardType {
-        private Type[] lowerBounds;
-
-        private Type[] upperBounds;
+        private final Type[] lowerBounds;
+        private final Type[] upperBounds;
 
         WildcardTypeImpl(Type[] lowerBounds, Type[] upperBounds) {
             super();
@@ -251,7 +249,7 @@ public class TypeParameterResolver {
     }
 
     static class GenericArrayTypeImpl implements GenericArrayType {
-        private Type genericComponentType;
+        private final Type genericComponentType;
 
         GenericArrayTypeImpl(Type genericComponentType) {
             super();

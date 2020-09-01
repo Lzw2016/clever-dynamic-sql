@@ -1,14 +1,13 @@
 package org.clever.dynamic.sql.reflection.wrapper;
 
+import org.clever.dynamic.sql.exception.ReflectionException;
 import org.clever.dynamic.sql.reflection.MetaObject;
-import org.clever.dynamic.sql.reflection.ReflectionException;
 import org.clever.dynamic.sql.reflection.property.PropertyTokenizer;
 
 import java.util.List;
 import java.util.Map;
 
 public abstract class BaseWrapper implements ObjectWrapper {
-
     protected static final Object[] NO_ARGUMENTS = new Object[0];
     protected final MetaObject metaObject;
 
@@ -24,6 +23,7 @@ public abstract class BaseWrapper implements ObjectWrapper {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     protected Object getCollectionValue(PropertyTokenizer prop, Object collection) {
         if (collection instanceof Map) {
             return ((Map) collection).get(prop.getIndex());
@@ -55,7 +55,7 @@ public abstract class BaseWrapper implements ObjectWrapper {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected void setCollectionValue(PropertyTokenizer prop, Object collection, Object value) {
         if (collection instanceof Map) {
             ((Map) collection).put(prop.getIndex(), value);
