@@ -53,9 +53,9 @@ public class XNode {
         this.body = parseBody(node);
     }
 
-//    public XNode newXNode(Node node) {
-//        return new XNode(xpathParser, node, variables);
-//    }
+    public XNode newXNode(Node node) {
+        return new XNode(xpathParser, node, variables);
+    }
 //
 //    public XNode getParent() {
 //        Node parent = node.getParentNode();
@@ -122,10 +122,11 @@ public class XNode {
 //        return xpathParser.evalNode(node, expression);
 //    }
 //
-//    public Node getNode() {
-//        return node;
-//    }
-//
+    public Node getNode() {
+        return node;
+    }
+
+    //
 //    public String getName() {
 //        return name;
 //    }
@@ -134,13 +135,13 @@ public class XNode {
 //        return getStringBody(null);
 //    }
 //
-//    public String getStringBody(String def) {
-//        if (body == null) {
-//            return def;
-//        } else {
-//            return body;
-//        }
-//    }
+    public String getStringBody(String def) {
+        if (body == null) {
+            return def;
+        } else {
+            return body;
+        }
+    }
 //
 //    public Boolean getBooleanBody() {
 //        return getBooleanBody(null);
@@ -214,20 +215,20 @@ public class XNode {
 //            return Enum.valueOf(enumType, value);
 //        }
 //    }
-//
-//    public String getStringAttribute(String name) {
-//        return getStringAttribute(name, null);
-//    }
-//
-//    public String getStringAttribute(String name, String def) {
-//        String value = attributes.getProperty(name);
-//        if (value == null) {
-//            return def;
-//        } else {
-//            return value;
-//        }
-//    }
-//
+
+    public String getStringAttribute(String name) {
+        return getStringAttribute(name, null);
+    }
+
+    public String getStringAttribute(String name, String def) {
+        String value = attributes.getProperty(name);
+        if (value == null) {
+            return def;
+        } else {
+            return value;
+        }
+    }
+
 //    public Boolean getBooleanAttribute(String name) {
 //        return getBooleanAttribute(name, null);
 //    }
