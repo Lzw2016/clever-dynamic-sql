@@ -25,9 +25,6 @@ public class DynamicSqlParser {
     public static SqlSource parserSql(String dynamicSql) {
         final Properties variables = new Properties();
         dynamicSql = StringUtils.trim(dynamicSql);
-        if (!dynamicSql.startsWith("<script>")) {
-            dynamicSql = "<script>" + dynamicSql + "</script>";
-        }
         if (dynamicSql.startsWith("<script>")) {
             XPathParser parser = new XPathParser(dynamicSql, false, variables);
             return createSqlSource(parser.evalNode("/script"));

@@ -75,7 +75,6 @@ public class DynamicSqlParserTest {
         params.put("id", 2);
         params.put("name", "%queryAll%");
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        boundSql.getParameterValueList();
         log.info("--> {}", deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
@@ -108,7 +107,13 @@ public class DynamicSqlParserTest {
         params.put("names", names);
         params.put("orderBy", "a.aaa DESC, a.bbb ASC");
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        boundSql.getParameterValueList();
+        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", boundSql.getParameterValueList());
+        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {}", boundSql.getParameterMap());
+
+        params.clear();
+        boundSql = sqlSource.getBoundSql(params);
         log.info("--> {}", deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
@@ -122,7 +127,6 @@ public class DynamicSqlParserTest {
         SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
         Author author = new Author(1, "cbegin", "******", "cbegin@apache.org", "N/A", Section.NEWS);
         BoundSql boundSql = sqlSource.getBoundSql(author);
-        boundSql.getParameterValueList();
         log.info("--> {}", deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
@@ -138,7 +142,6 @@ public class DynamicSqlParserTest {
         Map<String, Object> params = new HashMap<>();
         params.put("author", author);
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        boundSql.getParameterValueList();
         log.info("--> {}", deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
@@ -186,7 +189,6 @@ public class DynamicSqlParserTest {
         SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
         Map<String, Object> params = new HashMap<>();
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        boundSql.getParameterValueList();
         log.info("--> {}", deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
@@ -199,7 +201,6 @@ public class DynamicSqlParserTest {
         SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
         Map<String, Object> params = new HashMap<>();
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        boundSql.getParameterValueList();
         log.info("--> {}", deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));

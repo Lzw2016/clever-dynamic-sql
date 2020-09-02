@@ -1,105 +1,114 @@
-# ------------------------------------------------------------------------------------- <!--#t01#-->
-select * from sql_script where id=#{id} and name like '${name}'
-
-# ------------------------------------------------------------------------------------- <!--#t02#-->
-
-select * from sql_script
-where
-    id=#{id}
-    and name=#{name}
-    and id in (
-        <foreach collection='list' item='item' separator=','>
-            #{item}
-        </foreach>
-    )
-    and name in (
-        <foreach collection='names' item='item' separator=','>
-            #{item}
-        </foreach>
-    )
-order by ${orderBy}
-
-# ------------------------------------------------------------------------------------- <!--#t03#-->
-
-select * from author where username=#{username}
-
-# ------------------------------------------------------------------------------------- <!--#t04#-->
-
-select * from author where username=#{author.username}
-
-# ------------------------------------------------------------------------------------- <!--#t05#-->
-
-select * from sql_script
-where
-    id=#{id}
-    and name=#{name}
-    and id in (
-        <foreach collection='list' item='item' separator=','>
-            #{item}
-        </foreach>
-    )
-    and name in (
-        <foreach collection='names' item='item' separator=','>
-            #{item}
-        </foreach>
-    )
-order by ${orderBy}
-
-# ------------------------------------------------------------------------------------- <!--#t06#-->
-
-<bind name='pattern' value='title4' />
-select * from sql_script
-where
-    id=#{id}
-    and name=${name}
-    and id in (
-        <foreach collection='list' item='item' separator=','>
-            #{item}
-        </foreach>
-    )
-    <if test='title != null'>
-        and title=#{title}
-    </if>
-    <choose>
-        <when test='title2'>
-            and title2=#{title2}
-        </when>
-        <when test='title3'>
-            and title5=#{title5}
-        </when>
-        <otherwise>
-            and featured=#{featured}
-        </otherwise>
-    </choose>
-    and title4 like #{pattern}
+# -------------------------------------------------------------------------------------
+<script>
+    <!--#t01#-->
+    select * from sql_script where id=#{id} and name like '${name}'
+</script>
+# -------------------------------------------------------------------------------------
+<script>
+    <!--#t02#-->
+    select * from sql_script
+    where
+        id=#{id}
+        and name=#{name}
+        and id in (
+            <foreach collection='list' item='item' separator=','>
+                #{item}
+            </foreach>
+        )
+        and name in (
+            <foreach collection='names' item='item' separator=','>
+                #{item}
+            </foreach>
+        )
     order by ${orderBy}
-
-# ------------------------------------------------------------------------------------- <!--#t06#-->
-
-<bind name='pattern' value='"title4"' />
-select * from sql_script
-where
-    id=#{id}
-    and name=${name}
-    and id in (
-        <foreach collection='list' item='item' separator=','>#{item}</foreach>
-    )
-    <if test='title != null'>
-        and title=#{title}
-    </if>
-    <choose>
-        <when test='title2.name'>
-            and title2=#{title2}
-        </when>
-        <when test='title3'>
-            and title5=#{title5}
-        </when>
-        <otherwise>
-            and featured=#{featured}
-        </otherwise>
-    </choose>
-    and title4 like #{pattern}
+</script>
+# -------------------------------------------------------------------------------------
+<script>
+    <!--#t03#-->
+    select * from author where username=#{username}
+</script>
+# -------------------------------------------------------------------------------------
+<script>
+    <!--#t04#-->
+    select * from author where username=#{author.username}
+</script>
+# -------------------------------------------------------------------------------------
+<script>
+    <!--#t05#-->
+    select * from sql_script
+    where
+        id=#{id}
+        and name=#{name}
+        and id in (
+            <foreach collection='list' item='item' separator=','>
+                #{item}
+            </foreach>
+        )
+        and name in (
+            <foreach collection='names' item='item' separator=','>
+                #{item}
+            </foreach>
+        )
     order by ${orderBy}
+</script>
+# -------------------------------------------------------------------------------------
+<script>
+    <!--#t06#-->
+    <bind name='pattern' value='title4' />
+    select * from sql_script
+    where
+        id=#{id}
+        and name=${name}
+        and id in (
+            <foreach collection='list' item='item' separator=','>
+                #{item}
+            </foreach>
+        )
+        <if test='title != null'>
+            and title=#{title}
+        </if>
+        <choose>
+            <when test='title2'>
+                and title2=#{title2}
+            </when>
+            <when test='title3'>
+                and title5=#{title5}
+            </when>
+            <otherwise>
+                and featured=#{featured}
+            </otherwise>
+        </choose>
+        and title4 like #{pattern}
+        order by ${orderBy}
+</script>
+# -------------------------------------------------------------------------------------
+<script>
+    <!--#t06#-->
+    <bind name='pattern' value='"title4"' />
+    select * from sql_script
+    where
+        id=#{id}
+        and name=${name}
+        and id in (
+            <foreach collection='list' item='item' separator=','>#{item}</foreach>
+        )
+        <if test='title != null'>
+            and title=#{title}
+        </if>
+        <choose>
+            <when test='title2.name'>
+                and title2=#{title2}
+            </when>
+            <when test='title3'>
+                and title5=#{title5}
+            </when>
+            <otherwise>
+                and featured=#{featured}
+            </otherwise>
+        </choose>
+        and title4 like #{pattern}
+        order by ${orderBy}
+</script>
 # -------------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------------
