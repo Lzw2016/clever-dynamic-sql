@@ -30,3 +30,4 @@ target
 .DS_Store
 pom.xml.versionsBackup
 httpCache
+.flattened-pom.xml
