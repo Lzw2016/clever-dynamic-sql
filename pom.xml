@@ -6,7 +6,7 @@
 
     <!--统一版本修改 versions:set -DnewVersion=0.0.1-SNAPSHOT-->
     <artifactId>clever-dynamic-sql</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <description>动态SQL脚本生成(兼容mybatis)</description>
