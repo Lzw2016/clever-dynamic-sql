@@ -3,6 +3,7 @@ package org.clever.dynamic.sql.parsing;
 import org.clever.dynamic.sql.exception.BuilderException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.*;
 
 import javax.xml.namespace.QName;
@@ -14,6 +15,8 @@ import javax.xml.xpath.XPathFactory;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -86,10 +89,27 @@ public class XPathParser {
         this.document = document;
     }
 
+    public String evalString(String expression) {
+        return evalString(document, expression);
+    }
+
     public String evalString(Object root, String expression) {
         String result = (String) evaluate(expression, root, XPathConstants.STRING);
         result = PropertyParser.parse(result, variables);
         return result;
+    }
+
+    public List<XNode> evalNodes(String expression) {
+        return evalNodes(document, expression);
+    }
+
+    public List<XNode> evalNodes(Object root, String expression) {
+        List<XNode> xnodes = new ArrayList<>();
+        NodeList nodes = (NodeList) evaluate(expression, root, XPathConstants.NODESET);
+        for (int i = 0; i < nodes.getLength(); i++) {
+            xnodes.add(new XNode(this, nodes.item(i), variables));
+        }
+        return xnodes;
     }
 
     /**

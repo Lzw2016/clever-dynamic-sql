@@ -33,4 +33,17 @@
             </if>
         </where>
     </select>
+
+    <insert id="">
+    </insert>
+
+    <update id="">
+    </update>
+
+    <delete id="">
+    </delete>
+
+    <sql id="">
+
+    </sql>
 </mapper>

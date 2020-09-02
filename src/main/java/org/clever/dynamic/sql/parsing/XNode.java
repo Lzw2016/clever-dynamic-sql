@@ -57,6 +57,14 @@ public class XNode {
         return new XNode(xpathParser, node, variables);
     }
 
+    public List<XNode> evalNodes(String expression) {
+        return xpathParser.evalNodes(node, expression);
+    }
+
+    public XNode evalNode(String expression) {
+        return xpathParser.evalNode(node, expression);
+    }
+
     public Node getNode() {
         return node;
     }

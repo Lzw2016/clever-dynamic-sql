@@ -27,7 +27,7 @@ public class DynamicSqlParser {
         dynamicSql = StringUtils.Instance.trim(dynamicSql);
         if (dynamicSql.startsWith("<script>")) {
             XPathParser parser = new XPathParser(dynamicSql, false, variables);
-            return createSqlSource(parser.evalNode("/script"));
+            return parserSql(parser.evalNode("/script"));
         } else {
             dynamicSql = PropertyParser.parse(dynamicSql, variables);
             TextSqlNode textSqlNode = new TextSqlNode(dynamicSql);
@@ -39,7 +39,7 @@ public class DynamicSqlParser {
         }
     }
 
-    private static SqlSource createSqlSource(XNode script) {
+    public static SqlSource parserSql(XNode script) {
         XMLScriptBuilder builder = new XMLScriptBuilder(script);
         return builder.parseScriptNode();
     }
