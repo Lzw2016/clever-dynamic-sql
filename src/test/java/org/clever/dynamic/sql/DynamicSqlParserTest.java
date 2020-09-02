@@ -216,6 +216,25 @@ public class DynamicSqlParserTest {
         params.put("f4List", Arrays.asList("f4-111", "f4-222", "f4-333"));
         params.put("f5", "f5-val");
         params.put("f6", "f6-val");
+        params.put("f7", "f7-val");
+        BoundSql boundSql = sqlSource.getBoundSql(params);
+        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", boundSql.getParameterValueList());
+        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {}", boundSql.getParameterMap());
+    }
+
+    // mybatis 兼容性全面测试
+    @Test
+    public void t09() {
+        String sql = sqlArray[8];
+        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        Map<String, Object> params = new HashMap<>();
+        params.put("f1", "f1-val");
+        params.put("f2", "f2-val");
+        params.put("f3", "f3-val");
+        params.put("f4", "f4-val");
+        params.put("id", "id-val");
         BoundSql boundSql = sqlSource.getBoundSql(params);
         log.info("--> {}", deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
