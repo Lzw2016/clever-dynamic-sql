@@ -1,6 +1,5 @@
 package org.clever.dynamic.sql;
 
-import org.apache.commons.lang3.StringUtils;
 import org.clever.dynamic.sql.builder.DynamicSqlSource;
 import org.clever.dynamic.sql.builder.RawSqlSource;
 import org.clever.dynamic.sql.builder.SqlSource;
@@ -9,6 +8,7 @@ import org.clever.dynamic.sql.node.XMLScriptBuilder;
 import org.clever.dynamic.sql.parsing.PropertyParser;
 import org.clever.dynamic.sql.parsing.XNode;
 import org.clever.dynamic.sql.parsing.XPathParser;
+import org.clever.dynamic.sql.utils.StringUtils;
 
 import java.util.Properties;
 
@@ -24,7 +24,7 @@ public class DynamicSqlParser {
 
     public static SqlSource parserSql(String dynamicSql) {
         final Properties variables = new Properties();
-        dynamicSql = StringUtils.trim(dynamicSql);
+        dynamicSql = StringUtils.Instance.trim(dynamicSql);
         if (dynamicSql.startsWith("<script>")) {
             XPathParser parser = new XPathParser(dynamicSql, false, variables);
             return createSqlSource(parser.evalNode("/script"));

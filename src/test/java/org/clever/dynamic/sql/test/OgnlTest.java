@@ -7,6 +7,8 @@ import ognl.OgnlContext;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
 import org.clever.dynamic.sql.domain.Author;
+import org.clever.dynamic.sql.ognl.OgnlClassResolver;
+import org.clever.dynamic.sql.ognl.OgnlMemberAccess;
 import org.junit.Test;
 
 import java.util.Map;
@@ -24,15 +26,14 @@ public class OgnlTest {
         Author author = new Author();
         author.setId(11);
         author.setUsername("lzw");
-//        Map context = Ognl.createDefaultContext(author,
-//                new DefaultMemberAccess(true),
-//                new DefaultClassResolver(),
-//                new DefaultTypeConverter());
-//        context.put("author", author);
+        OgnlContext context = (OgnlContext) Ognl.createDefaultContext(author, new OgnlMemberAccess(), new OgnlClassResolver(), null);
+        context.put("author", author);
         PropertyAccessor propertyAccessor = new MyPropertyAccessor();
         OgnlRuntime.setPropertyAccessor(Author.class, propertyAccessor);
-        Object obj = Ognl.getValue("#author.username", author);
-        log.info("username -> {}", obj);
+        Object username = Ognl.getValue(Ognl.parseExpression("#author.username"), context, context.getRoot());
+        log.info("username -> {}", username);
+        username = Ognl.getValue(Ognl.parseExpression("username"), context, context.getRoot());
+        log.info("username -> {}", username);
     }
 }
 
@@ -43,7 +44,7 @@ class MyPropertyAccessor implements PropertyAccessor {
         String nameTmo = name.toString();
         OgnlContext ognlContext = (OgnlContext) context;
         Object result = OgnlRuntime.getMethodValue(ognlContext, target, nameTmo, true);
-        return result + "123";
+        return result + "##123";
     }
 
     @Override

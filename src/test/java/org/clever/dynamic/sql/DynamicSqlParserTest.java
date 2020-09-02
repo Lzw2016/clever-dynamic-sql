@@ -6,10 +6,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.clever.dynamic.sql.builder.SqlSource;
 import org.clever.dynamic.sql.domain.Author;
 import org.clever.dynamic.sql.domain.Section;
+import org.clever.dynamic.sql.ognl.OgnlCache;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -108,11 +110,13 @@ public class DynamicSqlParserTest {
         log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
-
+        log.info("#---------------------------------------------------------------------------------------------------------");
+        boundSql = sqlSource.getBoundSql(params);
+        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {}", boundSql.getParameterMap());
+        log.info("#---------------------------------------------------------------------------------------------------------");
         params.clear();
         boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
-        log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
     }
@@ -240,5 +244,29 @@ public class DynamicSqlParserTest {
         log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
+    }
+
+    // mybatis 扩展函数
+    @Test
+    public void t10() {
+        String sql = sqlArray[9];
+        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        Map<String, Object> params = new HashMap<>();
+        params.put("f1", "123");
+        params.put("f2", "   ");
+        params.put("f3", "bbb");
+        params.put("f4", new int[]{1, 2, 3});
+        params.put("f5", new ArrayList<String>() {{
+            add("f5-aaa");
+            add("f5-bbb");
+            add("f5-ccc");
+        }});
+        params.put("f6", new BigDecimal("999"));
+        BoundSql boundSql = sqlSource.getBoundSql(params);
+        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", boundSql.getParameterValueList());
+        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {}", boundSql.getParameterMap());
+        OgnlCache.Default_Context.put("demo", "自定义");
     }
 }

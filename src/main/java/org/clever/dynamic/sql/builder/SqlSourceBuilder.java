@@ -1,11 +1,11 @@
 package org.clever.dynamic.sql.builder;
 
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import org.clever.dynamic.sql.exception.BuilderException;
 import org.clever.dynamic.sql.node.DynamicContext;
 import org.clever.dynamic.sql.parsing.GenericTokenParser;
 import org.clever.dynamic.sql.parsing.TokenHandler;
+import org.clever.dynamic.sql.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,7 +72,7 @@ public class SqlSourceBuilder extends BaseBuilder {
                     throw new BuilderException("An invalid property '" + name + "' was found in mapping #{" + content + "}.  Valid properties are " + PARAMETER_PROPERTIES);
                 }
             }
-            if (StringUtils.isBlank(property)) {
+            if (StringUtils.Instance.isBlank(property)) {
                 throw new BuilderException("parameters is not empty");
             }
             return property;

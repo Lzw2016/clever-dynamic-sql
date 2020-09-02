@@ -3,8 +3,8 @@ package org.clever.dynamic.sql.node;
 import ognl.OgnlContext;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
-import org.apache.commons.lang3.StringUtils;
 import org.clever.dynamic.sql.reflection.MetaObject;
+import org.clever.dynamic.sql.utils.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,23 +18,23 @@ public class DynamicContext {
     }
 
     /**
-     *
+     * OgnlContext
      */
     private final ContextMap bindings;
     /**
-     *
+     * SQL语句缓存
      */
     private final StringJoiner sqlBuilder = new StringJoiner(" ");
     /**
-     *
+     * 自增唯一数字
      */
     private int uniqueNumber = 0;
     /**
-     *
+     * 表达式参数集合
      */
     private final Set<String> parameterExpressionSet = new LinkedHashSet<>();
     /**
-     *
+     * 参数集合
      */
     private final Set<String> parameterVar = new LinkedHashSet<>();
 
@@ -69,7 +69,7 @@ public class DynamicContext {
     }
 
     public void addParameterExpression(String expression) {
-        if (StringUtils.isNotBlank(expression)) {
+        if (StringUtils.Instance.isNotBlank(expression)) {
             parameterExpressionSet.add(expression);
         }
     }
@@ -79,7 +79,7 @@ public class DynamicContext {
     }
 
     public void addParameterVar(String var) {
-        if (StringUtils.isNotBlank(var)) {
+        if (StringUtils.Instance.isNotBlank(var)) {
             parameterVar.add(var);
         }
     }

@@ -7,10 +7,10 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.util.Map;
 
-class OgnlMemberAccess implements MemberAccess {
+public class OgnlMemberAccess implements MemberAccess {
     private final boolean canControlMemberAccessible;
 
-    OgnlMemberAccess() {
+    public OgnlMemberAccess() {
         this.canControlMemberAccessible = Reflector.canControlMemberAccessible();
     }
 
