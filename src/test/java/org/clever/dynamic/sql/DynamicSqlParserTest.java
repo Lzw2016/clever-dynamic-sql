@@ -206,4 +206,10 @@ public class DynamicSqlParserTest {
         log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
     }
+
+    // mybatis 兼容性全面测试
+    @Test
+    public void t08() {
+
+    }
 }
