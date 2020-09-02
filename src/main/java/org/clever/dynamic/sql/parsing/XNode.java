@@ -1,5 +1,6 @@
 package org.clever.dynamic.sql.parsing;
 
+import lombok.Getter;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -21,6 +22,7 @@ public class XNode {
     /**
      * XML节点名称
      */
+    @Getter
     private final String name;
     /**
      * XML节点内容
