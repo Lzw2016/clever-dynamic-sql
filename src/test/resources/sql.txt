@@ -172,13 +172,7 @@
         <if test="#str.isNotBlank(f2)">
             and f2=#{f2}
         </if>
-        <if test="#obj.isIn(f3, new String[]{'aaa', 'bbb', 'ccc'})">
-            and f3=#{f3}
-        </if>
-        <if test="#obj.isIn(f3, 'aaa,bbb,ccc')">
-            and f3=#{f3}
-        </if>
-        <if test="#obj.isIn(f3, 'aaa|bbb|ccc', '|')">
+        <if test="#obj.isIn(f3, 'aaa', 'bbb', 'ccc', 1, false)">
             and f3=#{f3}
         </if>
         <if test="#obj.notEmpty(f1)">

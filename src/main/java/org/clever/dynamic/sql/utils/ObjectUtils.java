@@ -6,48 +6,26 @@ import java.util.*;
  * 作者：lizw <br/>
  * 创建时间：2020/09/02 13:22 <br/>
  */
-@SuppressWarnings("DuplicatedCode")
+@SuppressWarnings({"DuplicatedCode", "SameParameterValue"})
 public class ObjectUtils {
     public static final ObjectUtils Instance = new ObjectUtils();
 
     private ObjectUtils() {
     }
 
-    public boolean isIn(final Object obj, final String[] array) {
+    public boolean isIn(final Object obj, final Object... array) {
         if (array == null || array.length <= 0) {
             return false;
         }
-        String str1 = obj == null ? null : String.valueOf(obj);
-        for (String str2 : array) {
-            if (Objects.equals(str1, str2)) {
+        for (Object obj2 : array) {
+            if (Objects.equals(obj, obj2)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isIn(final Object obj, final String arrStr) {
-        if (arrStr == null) {
-            return false;
-        }
-        String str1 = obj == null ? null : String.valueOf(obj);
-        String[] array = split(arrStr, ",");
-        return isIn(str1, array);
-    }
-
-    public boolean isIn(final Object obj, final String arrStr, String separatorChars) {
-        if (arrStr == null) {
-            return false;
-        }
-        if (separatorChars == null) {
-            separatorChars = ",";
-        }
-        String str1 = obj == null ? null : String.valueOf(obj);
-        String[] array = split(arrStr, separatorChars);
-        return isIn(str1, array);
-    }
-
-    public boolean isInIgnoreCase(final Object obj, final CharSequence[] array) {
+    public boolean isInIgnoreCase(final Object obj, final CharSequence... array) {
         if (array == null || array.length <= 0) {
             return false;
         }
@@ -58,27 +36,6 @@ public class ObjectUtils {
             }
         }
         return false;
-    }
-
-    public boolean isInIgnoreCase(final Object obj, final String arrStr) {
-        if (arrStr == null) {
-            return false;
-        }
-        String str1 = obj == null ? null : String.valueOf(obj);
-        String[] array = split(arrStr, ",");
-        return isInIgnoreCase(str1, array);
-    }
-
-    public boolean isInIgnoreCase(final Object obj, final String arrStr, String separatorChars) {
-        if (arrStr == null) {
-            return false;
-        }
-        if (separatorChars == null) {
-            separatorChars = ",";
-        }
-        String str1 = obj == null ? null : String.valueOf(obj);
-        String[] array = split(arrStr, separatorChars);
-        return isInIgnoreCase(str1, array);
     }
 
     @SuppressWarnings("rawtypes")
@@ -132,7 +89,6 @@ public class ObjectUtils {
         return splitWorker(str, separatorChars, max, false);
     }
 
-    @SuppressWarnings("DuplicatedCode")
     private static String[] splitWorker(final String str, final String separatorChars, final int max, final boolean preserveAllTokens) {
         // Performance tuned for 2.0 (JDK1.4)
         // Direct code is quicker than StringTokenizer.
