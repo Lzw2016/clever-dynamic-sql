@@ -76,8 +76,8 @@ public void t2() {
 输出:
 
 ```
---> select * from sql_script where id=? and name=? and id in (          ? , ? , ? , ? , ? , ?     )    and name in (         ? , ? , ? , ? , ? , ?    )   order by a.aaa DESC, a.bbb ASC
---> select * from sql_script where id=:id and name=:name and id in (          :__frch_item_0 , :__frch_item_1 , :__frch_item_2 , :__frch_item_3 , :__frch_item_4 , :__frch_item_5     )    and name in (         :__frch_item_6 , :__frch_item_7 , :__frch_item_8 , :__frch_item_9 , :__frch_item_10 , :__frch_item_11    )   order by a.aaa DESC, a.bbb ASC
+--> select * from sql_script where id=? and name=? and id in ( ? , ? , ? , ? , ? , ? ) and name in ( ? , ? , ? , ? , ? , ? ) order by a.aaa DESC, a.bbb ASC
+--> select * from sql_script where id=:id and name=:name and id in ( :__frch_item_0 , :__frch_item_1 , :__frch_item_2 , :__frch_item_3 , :__frch_item_4 , :__frch_item_5 )  and name in ( :__frch_item_6 , :__frch_item_7 , :__frch_item_8 , :__frch_item_9 , :__frch_item_10 , :__frch_item_11 ) order by a.aaa DESC, a.bbb ASC
 ```
 
 #### 参数是对象
@@ -168,8 +168,8 @@ public void t6() {
     final int count = 100000;
     final long start = System.currentTimeMillis();
     XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();
+    SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql);
     for (int i = 0; i < count; i++) {
-        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(sql);
         BoundSql boundSql = sqlSource.getBoundSql(params);
         boundSql.getParameterValueList();
     }
@@ -181,7 +181,7 @@ public void t6() {
 输出:
 
 ```
---> 耗时 20.018s, 速度： 4次/ms
+--> 耗时 2.9s, 速度： 34.48275862068966次/ms
 ```
 
 ## BoundSql 结构
@@ -211,11 +211,50 @@ public class BoundSql {
 }
 ```
 
-## TODO
-- [ ] 注释补全
-- [ ] 结构优化
-- [ ] 彻底重构
+## MyBatis 扩展
 
+#### 扩展函数
 
+- `#obj.notEmpty(paramField)` 判断对象不为null，字符串不为空字符串，数组集合不为空。**最常用基本符合所有的空判断**
+- `#obj.hasValue(paramField)` 同`#obj.notEmpty(...)`，只是一个`notEmpty`别名
+- `#obj.exists(paramField)` 同`#obj.notEmpty(...)`，只是一个`notEmpty`别名
+- `#obj.isIn(paramField, val_1, val_2', val_3, ...)` 判断`paramField`参数值在给定的范围(`val_1, val_2', val_3, ...`)内
+- `#obj.isInIgnoreCase(paramField, val_1, val_2', val_3, ...)` 与`#obj.isIn(...)`类似，仅仅只是针对字符串值，并且忽略字符串大小写
+- `#str.isNotBlank(paramField)` 字符串不为空字符串
+- `#str.isBlank(paramField)` 字符串是空字符串
+- `#str.hasText(paramField)` 字符串不为空字符串，`#str.isNotBlank(...)`别名
+- `#str.hasLength(paramField)`字符串长度大于0
+- `#str.contains(paramField, searchStr)` 字符串是否包含一个子字符串
+- `#str.containsIgnoreCase(paramField, searchStr)` 字符串是否包含一个子字符串，不区分大小写
+- `#str.trim(paramField)` 删除字符串头尾空格
 
+#### 使用示例
 
+```xml
+<select>
+    select * from sql_script
+    <where>
+        <if test="#str.isNotBlank(f1)">
+            and f1=#{f1}
+        </if>
+        <if test="#str.isNotBlank(f2)">
+            and f2=#{f2}
+        </if>
+        <if test="#obj.isIn(f3, 'aaa', 'bbb', 'ccc', 1, false)">
+            and f3=#{f3}
+        </if>
+        <if test="#obj.notEmpty(f1)">
+            and f1=#{f1}
+        </if>
+        <if test="#obj.notEmpty(f4)">
+            and f4=#{f4}
+        </if>
+        <if test="#obj.notEmpty(f5)">
+            and f5=#{f5}
+        </if>
+        <if test="#obj.notEmpty(f6)">
+            and f6=#{f6}
+        </if>
+    </where>
+</select>
+```
