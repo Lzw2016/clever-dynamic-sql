@@ -1,5 +1,5 @@
 # clever-dynamic-sql
-动态SQL脚本生成(兼容mybatis)
+动态SQL脚本生成(完全兼容mybatis)
 
 ## 使用Demo
 
@@ -215,18 +215,18 @@ public class BoundSql {
 
 #### 扩展函数
 
-- `#obj.notEmpty(paramField)` 判断对象不为null，字符串不为空字符串，数组集合不为空。**最常用基本符合所有的空判断**
-- `#obj.hasValue(paramField)` 同`#obj.notEmpty(...)`，只是一个`notEmpty`别名
-- `#obj.exists(paramField)` 同`#obj.notEmpty(...)`，只是一个`notEmpty`别名
-- `#obj.isIn(paramField, val_1, val_2', val_3, ...)` 判断`paramField`参数值在给定的范围(`val_1, val_2', val_3, ...`)内
-- `#obj.isInIgnoreCase(paramField, val_1, val_2', val_3, ...)` 与`#obj.isIn(...)`类似，仅仅只是针对字符串值，并且忽略字符串大小写
-- `#str.isNotBlank(paramField)` 字符串不为空字符串
-- `#str.isBlank(paramField)` 字符串是空字符串
-- `#str.hasText(paramField)` 字符串不为空字符串，`#str.isNotBlank(...)`别名
-- `#str.hasLength(paramField)`字符串长度大于0
-- `#str.contains(paramField, searchStr)` 字符串是否包含一个子字符串
-- `#str.containsIgnoreCase(paramField, searchStr)` 字符串是否包含一个子字符串，不区分大小写
-- `#str.trim(paramField)` 删除字符串头尾空格
+- `#obj.notEmpty(param)` 判断对象不为null，字符串不为空字符串，数组集合不为空。**最常用，符合所有的空判断**
+- `#obj.hasValue(param)` 同`#obj.notEmpty(...)`，只是一个`notEmpty`别名
+- `#obj.exists(param)` 同`#obj.notEmpty(...)`，只是一个`notEmpty`别名
+- `#obj.isIn(param, val_1, val_2', ...)` 判断`param`参数值在给定的范围(`val_1, val_2', ...`)内
+- `#obj.isInIgnoreCase(param, val_1, val_2', val_3, ...)` 与`#obj.isIn(...)`类似，仅仅只是针对字符串值，并且忽略字符串大小写
+- `#str.isNotBlank(param)` 字符串不为空字符串
+- `#str.isBlank(param)` 字符串是空字符串
+- `#str.hasText(param)` 字符串不为空字符串，`#str.isNotBlank(...)`别名
+- `#str.hasLength(param)`字符串长度大于0
+- `#str.contains(param, searchStr)` 字符串是否包含一个子字符串
+- `#str.containsIgnoreCase(param, searchStr)` 字符串是否包含一个子字符串，不区分大小写
+- `#str.trim(param)` 删除字符串头尾空格
 
 #### 使用示例
 
