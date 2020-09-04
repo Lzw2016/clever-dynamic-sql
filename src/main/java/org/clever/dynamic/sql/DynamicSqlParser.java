@@ -8,6 +8,7 @@ import org.clever.dynamic.sql.node.XMLScriptBuilder;
 import org.clever.dynamic.sql.parsing.PropertyParser;
 import org.clever.dynamic.sql.parsing.XNode;
 import org.clever.dynamic.sql.parsing.XPathParser;
+import org.clever.dynamic.sql.parsing.xml.XMLMapperEntityResolver;
 import org.clever.dynamic.sql.utils.StringUtils;
 
 import java.util.Properties;
@@ -26,7 +27,7 @@ public class DynamicSqlParser {
         final Properties variables = new Properties();
         dynamicSql = StringUtils.Instance.trim(dynamicSql);
         if (dynamicSql.startsWith("<script>")) {
-            XPathParser parser = new XPathParser(dynamicSql, false, variables);
+            XPathParser parser = new XPathParser(dynamicSql, false, variables, new XMLMapperEntityResolver());
             return parserSql(parser.evalNode("/script"));
         } else {
             dynamicSql = PropertyParser.parse(dynamicSql, variables);
