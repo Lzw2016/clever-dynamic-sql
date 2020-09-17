@@ -83,7 +83,7 @@ public class BoundSql {
     private void initSqlParameter() {
         if (parameterList == null || parameterList.isEmpty()) {
             parameterValueList = Collections.emptyList();
-            parameterMap = Collections.emptyMap();
+            parameterMap = new HashMap<>();
             return;
         }
         parameterValueList = new ArrayList<>(parameterList.size());

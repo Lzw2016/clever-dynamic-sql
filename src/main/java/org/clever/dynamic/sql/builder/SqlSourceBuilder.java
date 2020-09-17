@@ -8,7 +8,7 @@ import org.clever.dynamic.sql.parsing.TokenHandler;
 import org.clever.dynamic.sql.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class SqlSourceBuilder extends BaseBuilder {
         if (context != null) {
             this.context = context;
         } else {
-            this.context = new DynamicContext(Collections.emptyMap());
+            this.context = new DynamicContext(new HashMap<>());
         }
     }
 
