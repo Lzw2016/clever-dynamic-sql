@@ -39,7 +39,7 @@
         and e=#{e}
     </select>
 
-    <insert id="t04">
+    <select id="t04">
         select * from entity_mixin
         where a=#{a}
           and b=#{b}
@@ -55,15 +55,15 @@
         <foreach collection="i" item="item" open="(" close=")" separator=",">
             #{item.a}
         </foreach>
-    </insert>
+    </select>
 
-    <update id="t05">
+    <select id="t05">
+        select * from entity where a=@{to_date(aValue)}
+    </select>
 
-    </update>
-
-    <delete id="t06">
-
-    </delete>
+    <select id="t06">
+        select * from entity where a='@{to_date(aValue)}'
+    </select>
 
     <sql id="t07">
 
