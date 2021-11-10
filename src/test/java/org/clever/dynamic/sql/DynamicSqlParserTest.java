@@ -7,26 +7,11 @@ import org.clever.dynamic.sql.builder.SqlSource;
 import org.clever.dynamic.sql.domain.Author;
 import org.clever.dynamic.sql.domain.Section;
 import org.clever.dynamic.sql.ognl.OgnlCache;
-import org.clever.dynamic.sql.parsing.XNode;
-import org.clever.dynamic.sql.parsing.XPathParser;
+import org.clever.dynamic.sql.utils.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.io.File;
-import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -45,42 +30,6 @@ public class DynamicSqlParserTest {
         sqlArray = StringUtils.splitByWholeSeparator(sqlText, "# -------------------------------------------------------------------------------------");
     }
 
-    /**
-     * 删除多余的空白字符
-     */
-    private static String deleteWhitespace(String sql) {
-        if (sql == null) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder(sql.length());
-        boolean preIsWhitespace = false;
-        for (int i = 0; i < sql.length(); i++) {
-            char ch = sql.charAt(i);
-            boolean isWhitespace = Character.isWhitespace(ch);
-            if (preIsWhitespace) {
-                // 之前是空白字符
-                if (isWhitespace) {
-                    // 当前是空白字符
-                    continue;
-                } else {
-                    // 当前非空白字符
-                    sb.append(ch);
-                }
-            } else {
-                // 之前非空白字符
-                if (isWhitespace) {
-                    // 当前是空白字符
-                    sb.append(' ');
-                } else {
-                    // 当前非空白字符
-                    sb.append(ch);
-                }
-            }
-            preIsWhitespace = isWhitespace;
-        }
-        return sb.toString();
-    }
-
     // 简单脚本
     @Test
     public void t01() {
@@ -90,9 +39,9 @@ public class DynamicSqlParserTest {
         params.put("id", 2);
         params.put("name", "%queryAll%");
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
     }
 
@@ -122,18 +71,18 @@ public class DynamicSqlParserTest {
         params.put("names", names);
         params.put("orderBy", "a.aaa DESC, a.bbb ASC");
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
         log.info("#---------------------------------------------------------------------------------------------------------");
         boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
         log.info("#---------------------------------------------------------------------------------------------------------");
         params.clear();
         boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
     }
 
@@ -144,9 +93,9 @@ public class DynamicSqlParserTest {
         SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
         Author author = new Author(1, "cbegin", "******", "cbegin@apache.org", "N/A", Section.NEWS);
         BoundSql boundSql = sqlSource.getBoundSql(author);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
     }
 
@@ -159,9 +108,9 @@ public class DynamicSqlParserTest {
         Map<String, Object> params = new HashMap<>();
         params.put("author", author);
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
     }
 
@@ -206,9 +155,9 @@ public class DynamicSqlParserTest {
         SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
         Map<String, Object> params = new HashMap<>();
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
     }
 
@@ -218,9 +167,9 @@ public class DynamicSqlParserTest {
         SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
         Map<String, Object> params = new HashMap<>();
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
     }
 
@@ -238,9 +187,9 @@ public class DynamicSqlParserTest {
         params.put("f6", "f6-val");
         params.put("f7", "f7-val");
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
     }
 
@@ -256,9 +205,9 @@ public class DynamicSqlParserTest {
         params.put("f4", "f4-val");
         params.put("id", "id-val");
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
     }
 
@@ -279,69 +228,10 @@ public class DynamicSqlParserTest {
         }});
         params.put("f6", new BigDecimal("999"));
         BoundSql boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
         OgnlCache.Default_Context.put("demo", "自定义");
-    }
-
-    // 读取 mybatis mapper.xml
-    @Test
-    public void t11() throws Exception {
-        File xml = new File("src/test/resources/sql.xml");
-        // String sqlText = FileUtils.readFileToString(xml, "utf-8");
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(false);
-        factory.setNamespaceAware(false);
-        factory.setIgnoringComments(true);
-        factory.setIgnoringElementContentWhitespace(false);
-        factory.setCoalescing(false);
-        factory.setExpandEntityReferences(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        XPathFactory xPathFactory = XPathFactory.newInstance();
-        XPath xpath = xPathFactory.newXPath();
-        Document document = builder.parse(xml);
-        Node node = (Node) xpath.evaluate("/mapper", document, XPathConstants.NODE);
-        NodeList nodes = (NodeList) xpath.evaluate("sql|select|insert|update|delete", node, XPathConstants.NODESET);
-
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer transformer = tf.newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            StringWriter writer = new StringWriter();
-            transformer.transform(new DOMSource(n), new StreamResult(writer));
-            String output = writer.getBuffer().toString();
-            log.info("\n\n{}\n\n", output);
-        }
-    }
-
-    // 读取 mybatis mapper.xml
-    @Test
-    public void t12() throws Exception {
-        final Properties variables = new Properties();
-        File xml = new File("src/test/resources/sql.xml");
-        XPathParser xPathParser = new XPathParser(FileUtils.openInputStream(xml), false, variables);
-        SqlSource sqlSource = DynamicSqlParser.parserSql(xPathParser.evalNode("/mapper/select"));
-        Map<String, Object> params = new HashMap<>();
-        params.put("f1", "123");
-        params.put("f2", "   ");
-        params.put("f3", "bbb");
-        params.put("f4", new int[]{1, 2, 3});
-        params.put("f5", new ArrayList<String>() {{
-            add("f5-aaa");
-            add("f5-bbb");
-            add("f5-ccc");
-        }});
-        params.put("f6", new BigDecimal("999"));
-        BoundSql boundSql = sqlSource.getBoundSql(params);
-        log.info("--> {}", deleteWhitespace(boundSql.getSql()));
-        log.info("--> {}", boundSql.getParameterValueList());
-        log.info("--> {} ", deleteWhitespace(boundSql.getNamedParameterSql()));
-        log.info("--> {}", boundSql.getParameterMap());
-
-        List<XNode> nodes = xPathParser.evalNode("/mapper").evalNodes("sql|select|insert|update|delete");
-        log.info("nodes --> {}", nodes.size());
     }
 }

@@ -25,7 +25,7 @@
 # -------------------------------------------------------------------------------------
 <script>
     <!--#t03#-->
-    select * from author where username=#{username}
+    select * from author where username=#{username} and favourite_section=#{favouriteSection}
 </script>
 # -------------------------------------------------------------------------------------
 <script>
