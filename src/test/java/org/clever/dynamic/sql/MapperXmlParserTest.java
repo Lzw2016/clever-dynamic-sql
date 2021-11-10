@@ -3,24 +3,22 @@ package org.clever.dynamic.sql;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.clever.dynamic.sql.builder.SqlSource;
+import org.clever.dynamic.sql.domain.EntityA;
+import org.clever.dynamic.sql.domain.EntityB;
+import org.clever.dynamic.sql.domain.EntityMixin;
 import org.clever.dynamic.sql.parsing.XNode;
 import org.clever.dynamic.sql.parsing.XPathParser;
+import org.clever.dynamic.sql.parsing.xml.XMLMapperEntityResolver;
 import org.clever.dynamic.sql.utils.TestUtils;
+import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -33,27 +31,31 @@ import java.util.*;
 @Slf4j
 public class MapperXmlParserTest {
 
-    // 读取 mybatis mapper.xml
-    @Test
-    public void t11() throws Exception {
-        File xml = new File("src/test/resources/sql.xml");
-        // String sqlText = FileUtils.readFileToString(xml, "utf-8");
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(false);
-        factory.setNamespaceAware(false);
-        factory.setIgnoringComments(true);
-        factory.setIgnoringElementContentWhitespace(false);
-        factory.setCoalescing(false);
-        factory.setExpandEntityReferences(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        XPathFactory xPathFactory = XPathFactory.newInstance();
-        XPath xpath = xPathFactory.newXPath();
-        Document document = builder.parse(xml);
-        Node node = (Node) xpath.evaluate("/mapper", document, XPathConstants.NODE);
-        NodeList nodes = (NodeList) xpath.evaluate("sql|select|insert|update|delete", node, XPathConstants.NODESET);
+    private final String mapperXml = "src/test/resources/sql.xml";
+    private final List<XNode> nodes = new ArrayList<>();
 
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
+    public XNode getXNode(String id) {
+        for (XNode node : nodes) {
+            if (Objects.equals(id, node.getStringAttribute("id"))) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    @Before
+    public void init() throws Exception {
+        final Properties variables = new Properties();
+        final File xml = new File(mapperXml);
+        final XPathParser parser = new XPathParser(FileUtils.openInputStream(xml), true, variables, new XMLMapperEntityResolver());
+        final XNode mapper = parser.evalNode("/mapper");
+        nodes.addAll(mapper.evalNodes("sql|select|insert|update|delete"));
+    }
+
+    @Test
+    public void t01() throws Exception {
+        for (XNode node : nodes) {
+            Node n = node.getNode();
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer transformer = tf.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
@@ -64,13 +66,9 @@ public class MapperXmlParserTest {
         }
     }
 
-    // 读取 mybatis mapper.xml
     @Test
-    public void t12() throws Exception {
-        final Properties variables = new Properties();
-        File xml = new File("src/test/resources/sql.xml");
-        XPathParser xPathParser = new XPathParser(FileUtils.openInputStream(xml), false, variables);
-        SqlSource sqlSource = DynamicSqlParser.parserSql(xPathParser.evalNode("/mapper/select"));
+    public void t02() {
+        SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t02"));
         Map<String, Object> params = new HashMap<>();
         params.put("f1", "123");
         params.put("f2", "   ");
@@ -87,8 +85,57 @@ public class MapperXmlParserTest {
         log.info("--> {}", boundSql.getParameterValueList());
         log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
         log.info("--> {}", boundSql.getParameterMap());
+    }
 
-        List<XNode> nodes = xPathParser.evalNode("/mapper").evalNodes("sql|select|insert|update|delete");
-        log.info("nodes --> {}", nodes.size());
+    @Test
+    public void t03() {
+        EntityA entityA = new EntityA();
+        entityA.setA("abc");
+        entityA.setB(123);
+        entityA.setC(123.456);
+        entityA.setD(new BigDecimal("456.789"));
+        entityA.setE(true);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t03"));
+        BoundSql boundSql = sqlSource.getBoundSql(entityA);
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", boundSql.getParameterValueList());
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {}", boundSql.getParameterMap());
+    }
+
+    @Test
+    public void t04() {
+        EntityA entityA = new EntityA();
+        entityA.setA("abc");
+        entityA.setB(123);
+        entityA.setC(123.456);
+        entityA.setD(new BigDecimal("456.789"));
+        entityA.setE(true);
+
+        EntityB entityB = new EntityB();
+        entityB.setA("abc");
+        entityB.setB(123);
+        entityB.setC(123.456);
+        entityB.setD(new BigDecimal("456.789"));
+        entityB.setE(true);
+        entityB.setF(Arrays.asList("aaa", "bbb", "ccc"));
+        entityB.setG(entityA);
+
+        EntityMixin entityMixin = new EntityMixin();
+        entityMixin.setA("abc");
+        entityMixin.setB(123);
+        entityMixin.setC(123.456);
+        entityMixin.setD(new BigDecimal("456.789"));
+        entityMixin.setE(true);
+        entityMixin.setF(Arrays.asList(1L, 2L, 3L));
+        entityMixin.setG(entityA);
+        entityMixin.setH(entityB);
+        entityMixin.setI(Arrays.asList(entityA, entityA, entityA));
+        SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t04"));
+        BoundSql boundSql = sqlSource.getBoundSql(entityMixin);
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", boundSql.getParameterValueList());
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {}", boundSql.getParameterMap());
     }
 }
