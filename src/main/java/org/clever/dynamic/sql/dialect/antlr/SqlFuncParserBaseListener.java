@@ -1,4 +1,4 @@
-// Generated from C:/Users/lizw/Desktop/SourceCode/github/clever-dynamic-sql/src/main/resources\SqlFuncParser.g4 by ANTLR 4.9.2
+// Generated from D:/SourceCode/clever/clever-dynamic-sql/src/main/resources\SqlFuncParser.g4 by ANTLR 4.9.2
 package org.clever.dynamic.sql.dialect.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -35,6 +35,18 @@ public class SqlFuncParserBaseListener implements SqlFuncParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitParameterList(SqlFuncParser.ParameterListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParameter(SqlFuncParser.ParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParameter(SqlFuncParser.ParameterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

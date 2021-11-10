@@ -1,4 +1,4 @@
-// Generated from C:/Users/lizw/Desktop/SourceCode/github/clever-dynamic-sql/src/main/resources\SqlFuncParser.g4 by ANTLR 4.9.2
+// Generated from D:/SourceCode/clever/clever-dynamic-sql/src/main/resources\SqlFuncParser.g4 by ANTLR 4.9.2
 package org.clever.dynamic.sql.dialect.antlr;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -25,4 +25,11 @@ public class SqlFuncParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitParameterList(SqlFuncParser.ParameterListContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitParameter(SqlFuncParser.ParameterContext ctx) { return visitChildren(ctx); }
 }

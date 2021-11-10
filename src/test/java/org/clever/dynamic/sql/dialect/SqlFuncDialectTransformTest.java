@@ -17,11 +17,8 @@ import org.junit.jupiter.api.Test;
 @Slf4j
 public class SqlFuncDialectTransformTest {
 
-    @Test
-    public void t01() {
+    public void parser(String code) {
         final long startTime = System.currentTimeMillis();
-        // func_test(entity.fieldA.method(), entity.fieldB, "YYYY-DD-MM", var2, var3)
-        final String code = "func_test(entity.fieldA.method(), entity.fieldB, \"YYYY-DD-MM\", var2, var3)";
         CharStream charStream = CharStreams.fromString(code);
         SqlFuncLexer lexer = new SqlFuncLexer(charStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
@@ -31,6 +28,21 @@ public class SqlFuncDialectTransformTest {
         SqlFuncDialectTransform transform = new SqlFuncDialectTransform(lexer, tokenStream, parser);
         walker.walk(transform, tree);
         final long endTime = System.currentTimeMillis();
-//        log.info("耗时：{}ms\n\n\n{}\n\n", endTime - startTime, transform.getDTSCode());
+        log.info("耗时：{}ms", endTime - startTime);
+    }
+
+
+    @Test
+    public void t01() {
+        // func_test(entity.fieldA.method(), entity.fieldB, "YYYY-DD-MM", var2, var3)
+        final String code = "func_test(entity.fieldA.method(), entity.fieldB, \"YYYY-DD-MM\", var2, var3)";
+        parser(code);
+    }
+
+    @Test
+    public void t02() {
+        // func_test(entity.fieldA.method(entity.fieldC, "abc"), entity.fieldB, "YYYY-DD-MM", var2, var3)
+        final String code = "func_test(entity.fieldA.method(entity.fieldC, \"abc\"), entity.fieldB, \"YYYY-DD-MM\", var2, var3)";
+        parser(code);
     }
 }
