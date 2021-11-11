@@ -11,6 +11,7 @@ import org.clever.dynamic.sql.ognl.OgnlClassResolver;
 import org.clever.dynamic.sql.ognl.OgnlMemberAccess;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,6 +35,20 @@ public class OgnlTest {
         log.info("username -> {}", username);
         username = Ognl.getValue(Ognl.parseExpression("username"), context, context.getRoot());
         log.info("username -> {}", username);
+    }
+
+    @SneakyThrows
+    @Test
+    public void t02() {
+        Author author = new Author();
+        OgnlContext context = (OgnlContext) Ognl.createDefaultContext(author, new OgnlMemberAccess(), new OgnlClassResolver(), null);
+        context.setRoot(author);
+        context.setValues(new HashMap<>());
+        context.put("author", author);
+        Ognl.getValue("#author.setId(123456)", context, context.getRoot());
+        log.info("author -> {}", author);
+        Ognl.getValue("#author.setLongId(123456789L)", context, context.getRoot());
+        log.info("author -> {}", author);
     }
 }
 

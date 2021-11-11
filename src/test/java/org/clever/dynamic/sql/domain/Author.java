@@ -30,4 +30,8 @@ public class Author implements Serializable {
     public Author() {
         this(-1, null, null, null, null, null);
     }
+
+    public void setLongId(Long id) {
+        this.id = id.intValue();
+    }
 }
