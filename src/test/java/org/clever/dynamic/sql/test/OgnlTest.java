@@ -7,6 +7,7 @@ import ognl.OgnlContext;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
 import org.clever.dynamic.sql.domain.Author;
+import org.clever.dynamic.sql.ognl.OgnlCache;
 import org.clever.dynamic.sql.ognl.OgnlClassResolver;
 import org.clever.dynamic.sql.ognl.OgnlMemberAccess;
 import org.junit.Test;
@@ -49,6 +50,17 @@ public class OgnlTest {
         log.info("author -> {}", author);
         Ognl.getValue("#author.setLongId(123456789L)", context, context.getRoot());
         log.info("author -> {}", author);
+    }
+
+    @Test
+    public void t03() {
+        Author author = new Author();
+        author.setId(111222333);
+        author.setUsername("lzw");
+        Map<String, Object> root = new HashMap<>();
+        root.put("author", author);
+        Object id = OgnlCache.getValue("author.id", root);
+        log.info("id -> {}", id);
     }
 }
 

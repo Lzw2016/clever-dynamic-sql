@@ -58,11 +58,13 @@
     </select>
 
     <select id="t05">
-        select * from entity where a=@{to_date(aValue)}
+        select * from entity_a
+        where a='@{to_date(today1)}'
+          and b='@{to_date(today2)}'
     </select>
 
     <select id="t06">
-        select * from entity where a='@{to_date(aValue)}'
+        select * from table where id in ('@{join(arr)}')
     </select>
 
     <sql id="t07">

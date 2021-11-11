@@ -45,13 +45,7 @@ sqlParameter
     | javaFunc                                  // java函数
     ;
 
-
-
-
-
-
 /*
 1.javaFunc(IDENTIFIER, NULL_LITERAL, BOOL_LITERAL, CHAR_LITERAL, DECIMAL_LITERAL, STRING_LITERAL, javaFunc)
-2.sqlFunc(IDENTIFIER, NULL_LITERAL, BOOL_LITERAL, CHAR_LITERAL, DECIMAL_LITERAL, STRING_LITERAL, javaFunc|sqlFunc)
-3.funcDeclaration -> IDENTIFIER(javaFunc|sqlFunc)
+2.sqlFunc(IDENTIFIER, NULL_LITERAL, BOOL_LITERAL, CHAR_LITERAL, DECIMAL_LITERAL, STRING_LITERAL, javaFunc, sqlFunc)
 */

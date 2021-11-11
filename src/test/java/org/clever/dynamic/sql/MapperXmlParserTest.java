@@ -3,6 +3,9 @@ package org.clever.dynamic.sql;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.clever.dynamic.sql.builder.SqlSource;
+import org.clever.dynamic.sql.dialect.JoinFuncTransform;
+import org.clever.dynamic.sql.dialect.SqlFuncDialectTransform;
+import org.clever.dynamic.sql.dialect.ToDateFuncTransform;
 import org.clever.dynamic.sql.domain.EntityA;
 import org.clever.dynamic.sql.domain.EntityB;
 import org.clever.dynamic.sql.domain.EntityMixin;
@@ -141,9 +144,39 @@ public class MapperXmlParserTest {
 
     @Test
     public void t05() {
+        SqlFuncDialectTransform.register(new ToDateFuncTransform());
+
         SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t05"));
         Map<String, Object> params = new HashMap<>();
-        params.put("aValue", new Date());
+        params.put("today1", new Date());
+        params.put("today2", new Date());
+        BoundSql boundSql = sqlSource.getBoundSql(params);
+        log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
+        log.info("--> {}", boundSql.getParameterValueList());
+        log.info("--> {} ", TestUtils.deleteWhitespace(boundSql.getNamedParameterSql()));
+        log.info("--> {}", boundSql.getParameterMap());
+    }
+
+    @Test
+    public void t06() {
+        SqlFuncDialectTransform.register(new JoinFuncTransform());
+
+        List<Integer> arr = new ArrayList<>();
+        arr.add(1);
+        arr.add(2);
+        arr.add(3);
+        arr.add(4);
+        arr.add(5);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t06"));
+        Map<String, Object> params = new HashMap<>();
+        params.put("arr", arr);
+
+        params.put("id_1", 1);
+        params.put("id_2", 2);
+        params.put("id_3", 3);
+        params.put("id_4", 4);
+        params.put("id_5", 5);
+
         BoundSql boundSql = sqlSource.getBoundSql(params);
         log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
