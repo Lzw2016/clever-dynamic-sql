@@ -23,7 +23,7 @@ public class SqlFuncDialectTransformTest {
         SqlFuncLexer lexer = new SqlFuncLexer(charStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         SqlFuncParser parser = new SqlFuncParser(tokenStream);
-        ParseTree tree = parser.funcDeclaration();
+        ParseTree tree = parser.sqlFunc();
         ParseTreeWalker walker = new ParseTreeWalker();
         SqlFuncDialectTransform transform = new SqlFuncDialectTransform(lexer, tokenStream, parser);
         walker.walk(transform, tree);
@@ -34,15 +34,22 @@ public class SqlFuncDialectTransformTest {
 
     @Test
     public void t01() {
-        // func_test(entity.fieldA.method(), entity.fieldB, "YYYY-DD-MM", var2, var3)
-        final String code = "func_test(entity.fieldA.method(), entity.fieldB, \"YYYY-DD-MM\", var2, var3)";
+        // sql_func_1(jObject.fieldA.java_func(), jObject.fieldB, "YYYY-DD-MM", jVar2, jVar3)
+        final String code = "sql_func_1(jObject.fieldA.java_func(), jObject.fieldB, \"YYYY-DD-MM\", jVar2, jVar3)";
         parser(code);
     }
 
     @Test
     public void t02() {
-        // func_test(entity.fieldA.method(entity.fieldC, "abc"), entity.fieldB, "YYYY-DD-MM", var2, var3)
-        final String code = "func_test(entity.fieldA.method(entity.fieldC, \"abc\"), entity.fieldB, \"YYYY-DD-MM\", var2, var3)";
+        // sql_func_1(jObject.fieldA.java_func(jObject.fieldC, "abc"), jObject.fieldB, "YYYY-DD-MM", jVar2, jVar3)
+        final String code = "sql_func_1(jObject.fieldA.java_func(jObject.fieldC, \"abc\"), jObject.fieldB, \"YYYY-DD-MM\", jVar2, jVar3)";
+        parser(code);
+    }
+
+    @Test
+    public void t03() {
+        // sql_func_1(jObject.java_func_1(jVar2, "ABC"), jVar3, sql_func_2(jVar3, jObject.java_func_2(jVar2, "ABC")))
+        final String code = "sql_func_1(jObject.java_func_1(jVar2, \"ABC\"), jVar3, sql_func_2(jVar3, jObject.java_func_2(jVar2, \"ABC\")))";
         parser(code);
     }
 }

@@ -8,33 +8,73 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface SqlFuncParserListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link SqlFuncParser#funcDeclaration}.
+	 * Enter a parse tree produced by {@link SqlFuncParser#javaFunc}.
 	 * @param ctx the parse tree
 	 */
-	void enterFuncDeclaration(SqlFuncParser.FuncDeclarationContext ctx);
+	void enterJavaFunc(SqlFuncParser.JavaFuncContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SqlFuncParser#funcDeclaration}.
+	 * Exit a parse tree produced by {@link SqlFuncParser#javaFunc}.
 	 * @param ctx the parse tree
 	 */
-	void exitFuncDeclaration(SqlFuncParser.FuncDeclarationContext ctx);
+	void exitJavaFunc(SqlFuncParser.JavaFuncContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SqlFuncParser#parameterList}.
+	 * Enter a parse tree produced by {@link SqlFuncParser#javaParameterList}.
 	 * @param ctx the parse tree
 	 */
-	void enterParameterList(SqlFuncParser.ParameterListContext ctx);
+	void enterJavaParameterList(SqlFuncParser.JavaParameterListContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SqlFuncParser#parameterList}.
+	 * Exit a parse tree produced by {@link SqlFuncParser#javaParameterList}.
 	 * @param ctx the parse tree
 	 */
-	void exitParameterList(SqlFuncParser.ParameterListContext ctx);
+	void exitJavaParameterList(SqlFuncParser.JavaParameterListContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SqlFuncParser#parameter}.
+	 * Enter a parse tree produced by {@link SqlFuncParser#javaParameter}.
 	 * @param ctx the parse tree
 	 */
-	void enterParameter(SqlFuncParser.ParameterContext ctx);
+	void enterJavaParameter(SqlFuncParser.JavaParameterContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SqlFuncParser#parameter}.
+	 * Exit a parse tree produced by {@link SqlFuncParser#javaParameter}.
 	 * @param ctx the parse tree
 	 */
-	void exitParameter(SqlFuncParser.ParameterContext ctx);
+	void exitJavaParameter(SqlFuncParser.JavaParameterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SqlFuncParser#javaVar}.
+	 * @param ctx the parse tree
+	 */
+	void enterJavaVar(SqlFuncParser.JavaVarContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SqlFuncParser#javaVar}.
+	 * @param ctx the parse tree
+	 */
+	void exitJavaVar(SqlFuncParser.JavaVarContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SqlFuncParser#sqlFunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterSqlFunc(SqlFuncParser.SqlFuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SqlFuncParser#sqlFunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitSqlFunc(SqlFuncParser.SqlFuncContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SqlFuncParser#sqlParameterList}.
+	 * @param ctx the parse tree
+	 */
+	void enterSqlParameterList(SqlFuncParser.SqlParameterListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SqlFuncParser#sqlParameterList}.
+	 * @param ctx the parse tree
+	 */
+	void exitSqlParameterList(SqlFuncParser.SqlParameterListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SqlFuncParser#sqlParameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterSqlParameter(SqlFuncParser.SqlParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SqlFuncParser#sqlParameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitSqlParameter(SqlFuncParser.SqlParameterContext ctx);
 }

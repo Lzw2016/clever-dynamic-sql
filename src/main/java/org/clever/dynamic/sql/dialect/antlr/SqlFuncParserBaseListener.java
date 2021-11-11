@@ -16,37 +16,85 @@ public class SqlFuncParserBaseListener implements SqlFuncParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFuncDeclaration(SqlFuncParser.FuncDeclarationContext ctx) { }
+	@Override public void enterJavaFunc(SqlFuncParser.JavaFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFuncDeclaration(SqlFuncParser.FuncDeclarationContext ctx) { }
+	@Override public void exitJavaFunc(SqlFuncParser.JavaFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParameterList(SqlFuncParser.ParameterListContext ctx) { }
+	@Override public void enterJavaParameterList(SqlFuncParser.JavaParameterListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParameterList(SqlFuncParser.ParameterListContext ctx) { }
+	@Override public void exitJavaParameterList(SqlFuncParser.JavaParameterListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParameter(SqlFuncParser.ParameterContext ctx) { }
+	@Override public void enterJavaParameter(SqlFuncParser.JavaParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParameter(SqlFuncParser.ParameterContext ctx) { }
+	@Override public void exitJavaParameter(SqlFuncParser.JavaParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterJavaVar(SqlFuncParser.JavaVarContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitJavaVar(SqlFuncParser.JavaVarContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSqlFunc(SqlFuncParser.SqlFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSqlFunc(SqlFuncParser.SqlFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSqlParameterList(SqlFuncParser.SqlParameterListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSqlParameterList(SqlFuncParser.SqlParameterListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSqlParameter(SqlFuncParser.SqlParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSqlParameter(SqlFuncParser.SqlParameterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
