@@ -1,4 +1,9 @@
-package org.clever.dynamic.sql.dialect;
+package org.clever.dynamic.sql.dialect.func;
+
+import org.clever.dynamic.sql.dialect.DbType;
+import org.clever.dynamic.sql.dialect.SqlFuncDialect;
+import org.clever.dynamic.sql.dialect.SqlFuncParam;
+import org.clever.dynamic.sql.dialect.SqlFuncTransform;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

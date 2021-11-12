@@ -1,5 +1,6 @@
 package org.clever.dynamic.sql.dialect;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -7,6 +8,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncLexer;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParser;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParserBaseListener;
+import org.clever.dynamic.sql.dialect.exception.SqlFuncTransformAlreadyExists;
 import org.clever.dynamic.sql.ognl.OgnlCache;
 
 import java.util.*;
@@ -22,14 +24,26 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
     private static final ConcurrentMap<String, CopyOnWriteArrayList<SqlFuncTransform>> TRANSFORMS_MAP = new ConcurrentHashMap<>();
 
+    /**
+     * 注册SqlFuncTransform
+     */
     public static void register(SqlFuncTransform sqlFuncTransform) {
+        if (sqlFuncTransform == null) {
+            return;
+        }
         CopyOnWriteArrayList<SqlFuncTransform> transforms = TRANSFORMS_MAP.computeIfAbsent(sqlFuncTransform.getFuncName(), funcName -> new CopyOnWriteArrayList<>());
         if (transforms.stream().anyMatch(transform -> Objects.equals(transform.getClass(), sqlFuncTransform.getClass()))) {
-            return;
+            throw new SqlFuncTransformAlreadyExists("当前SqlFuncTransform类型已存在，class=" + sqlFuncTransform.getClass().getName());
         }
         transforms.add(sqlFuncTransform);
     }
 
+    /**
+     * 获取 SqlFuncTransform
+     *
+     * @param funcName SQL函数名称
+     * @param dbType   数据库类型
+     */
     public static SqlFuncTransform getTransform(String funcName, DbType dbType) {
         CopyOnWriteArrayList<SqlFuncTransform> transforms = TRANSFORMS_MAP.get(funcName);
         if (transforms == null || transforms.isEmpty()) {
@@ -49,18 +63,28 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
     private final CommonTokenStream tokenStream;
     private final SqlFuncParser sqlFuncParser;
 
+    // TODO 删除
     private final Stack<String> sqlFuncNameStack = new Stack<>();
+    // TODO 删除
     private final List<SqlFuncParam> sqlFuncParams = new Stack<>();
 
+    /**
+     * 是否有解析错误
+     */
+    private boolean hasError = false;
+    /**
+     * 解析sql函数的栈容器
+     */
+    private final Stack<SqlFuncNode> sqlFuncNodeStack = new Stack<>();
     /**
      * 转换后的sql
      */
     private final StringBuilder sqlFuncLiteral = new StringBuilder();
     /**
-     * 对应的sql参数
+     * 对应的sql变量参数，形如#{variable}的变量
      */
-    @Getter
-    private final LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+    @Getter // TODO 改写Getter函数?
+    private final LinkedHashMap<String, Object> sqlVariable = new LinkedHashMap<>();
 
     public String getSqlFuncLiteral() {
         return sqlFuncLiteral.toString();
@@ -119,6 +143,9 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
 
     @Override
     public void enterSqlFunc(SqlFuncParser.SqlFuncContext ctx) {
+        if (hasError) {
+            return;
+        }
         String sqlFuncName = ctx.IDENTIFIER().getSymbol().getText();
         sqlFuncNameStack.push(sqlFuncName);
     }
@@ -134,7 +161,7 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
         sqlFuncLiteral.append(sqlFuncDialect.getSqlFuncLiteral());
         for (SqlFuncParam param : sqlFuncParams) {
             if (param.isVariable()) {
-                params.put(param.getName(), param.getValue());
+                sqlVariable.put(param.getName(), param.getValue());
             }
         }
         sqlFuncParams.clear();
@@ -161,7 +188,7 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
         if (ctx.javaVar() != null) {
             String literal = ctx.javaVar().getText();
             Object param = OgnlCache.getValue(literal, ognlRoot);
-            SqlFuncParam sqlFuncParam = new SqlFuncParam(literal, literal, param, true);
+            SqlFuncParam sqlFuncParam = new SqlFuncParam(true, literal, literal, param);
             sqlFuncParams.add(sqlFuncParam);
         }
     }
@@ -172,6 +199,61 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
 
     @Override
     public void visitErrorNode(ErrorNode node) {
-        super.visitErrorNode(node);
+        hasError = true;
+    }
+
+    @Data
+    public static final class SqlFuncNode {
+        /**
+         * SQL函数名称
+         */
+        private final String funcName;
+        /**
+         * SQL函数参数
+         */
+        private final List<SqlFuncNodeParam> params = new ArrayList<>();
+
+        public SqlFuncNode(String funcName) {
+            this.funcName = funcName;
+        }
+    }
+
+    @Data
+    public static final class SqlFuncNodeParam {
+        /**
+         * 参数类型
+         */
+        private final NodeChildTypeEnum type;
+        /**
+         * SQL参数
+         */
+        private final SqlFuncParam param;
+        /**
+         * 子函数
+         */
+        private final SqlFuncNode func;
+
+        public SqlFuncNodeParam(SqlFuncParam param) {
+            this.type = NodeChildTypeEnum.SQL_PARAM;
+            this.param = param;
+            this.func = null;
+        }
+
+        public SqlFuncNodeParam(SqlFuncNode func) {
+            this.type = NodeChildTypeEnum.CHILD_FUNC;
+            this.param = null;
+            this.func = func;
+        }
+    }
+
+    public enum NodeChildTypeEnum {
+        /**
+         * SQL参数
+         */
+        SQL_PARAM,
+        /**
+         * 子函数
+         */
+        CHILD_FUNC,
     }
 }

@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncLexer;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParser;
+import org.clever.dynamic.sql.dialect.func.ToDateFuncTransform;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -74,13 +75,13 @@ public class SqlFuncDialectTransformTest {
         final String code = "to_date(today)";
 
         SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, bindings);
-        log.info("MYSQL        --> {} | {}", transform.getSqlFuncLiteral(), transform.getParams());
+        log.info("MYSQL        --> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
 
         transform = parser(code, DbType.ORACLE, bindings);
-        log.info("ORACLE       --> {} | {}", transform.getSqlFuncLiteral(), transform.getParams());
+        log.info("ORACLE       --> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
 
         transform = parser(code, DbType.SQL_SERVER, bindings);
-        log.info("SQL_SERVER   --> {} | {}", transform.getSqlFuncLiteral(), transform.getParams());
+        log.info("SQL_SERVER   --> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
     }
 
     @Test
@@ -101,7 +102,7 @@ public class SqlFuncDialectTransformTest {
             start = matcher.end();
             SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, bindings);
             newSql.append(transform.getSqlFuncLiteral());
-            params.putAll(transform.getParams());
+            params.putAll(transform.getSqlVariable());
         }
         newSql.append(sql, start, sql.length());
         log.info("newSql   --> {} | {}", newSql, params);

@@ -11,26 +11,38 @@ import java.io.Serializable;
 @Data
 public class SqlFuncParam implements Serializable {
     /**
+     * 是否是变量
+     */
+    private final boolean variable;
+    /**
      * 参数字面值
+     * <pre>
+     * 1.参数是静态值，就使用“literal(字面量)”
+     * 2.参数是变量，就使用“name(参数名)”
+     * </pre>
      */
     private final String literal;
     /**
      * 参数名
+     * <pre>
+     * 1.参数是静态值，就使用“literal(字面量)”
+     * 2.参数是变量，就使用“name(参数名)”
+     * </pre>
      */
     private final String name;
     /**
      * 参数值
+     * <pre>
+     * 1.参数是变量时，对应变量的值
+     * 2.参数是静态值时为null
+     * </pre>
      */
     private final Object value;
-    /**
-     * 是否是变量
-     */
-    private final boolean variable;
 
-    public SqlFuncParam(String literal, String name, Object value, boolean variable) {
+    public SqlFuncParam(boolean variable, String literal, String name, Object value) {
+        this.variable = variable;
         this.literal = literal;
         this.name = name;
         this.value = value;
-        this.variable = variable;
     }
 }
