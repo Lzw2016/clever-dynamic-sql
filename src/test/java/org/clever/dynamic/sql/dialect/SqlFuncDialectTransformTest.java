@@ -30,7 +30,7 @@ public class SqlFuncDialectTransformTest {
     }
 
     public SqlFuncDialectTransform parser(String code, DbType dbType, Map<String, Object> ognlRoot) {
-//        final long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
         CharStream charStream = CharStreams.fromString(code);
         SqlFuncLexer lexer = new SqlFuncLexer(charStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
@@ -39,8 +39,8 @@ public class SqlFuncDialectTransformTest {
         ParseTreeWalker walker = new ParseTreeWalker();
         SqlFuncDialectTransform transform = new SqlFuncDialectTransform(dbType, ognlRoot, lexer, tokenStream, parser);
         walker.walk(transform, tree);
-//        final long endTime = System.currentTimeMillis();
-//        log.info("耗时：{}ms", endTime - startTime);
+        final long endTime = System.currentTimeMillis();
+        log.info("耗时：{}ms", endTime - startTime);
         return transform;
     }
 

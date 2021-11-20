@@ -63,15 +63,14 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
     private final CommonTokenStream tokenStream;
     private final SqlFuncParser sqlFuncParser;
 
-    // TODO 删除
-    private final Stack<String> sqlFuncNameStack = new Stack<>();
-    // TODO 删除
-    private final List<SqlFuncParam> sqlFuncParams = new Stack<>();
-
     /**
      * 是否有解析错误
      */
     private boolean hasError = false;
+    /**
+     * 最外层sql函数
+     */
+    private SqlFuncNode rootSqlFuncNode;
     /**
      * 解析sql函数的栈容器
      */
@@ -90,6 +89,10 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
         return sqlFuncLiteral.toString();
     }
 
+    /**
+     * @param dbType   数据库类型
+     * @param ognlRoot ognl表达式的root对象
+     */
     public SqlFuncDialectTransform(DbType dbType, Map<String, Object> ognlRoot, SqlFuncLexer lexer, CommonTokenStream tokenStream, SqlFuncParser sqlFuncParser) {
         this.dbType = dbType;
         this.ognlRoot = ognlRoot;
@@ -147,24 +150,32 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
             return;
         }
         String sqlFuncName = ctx.IDENTIFIER().getSymbol().getText();
-        sqlFuncNameStack.push(sqlFuncName);
+        SqlFuncNode sqlFuncNode = new SqlFuncNode(sqlFuncName);
+        sqlFuncNodeStack.push(sqlFuncNode);
+        if (rootSqlFuncNode == null) {
+            rootSqlFuncNode = sqlFuncNode;
+        }
     }
 
     @Override
     public void exitSqlFunc(SqlFuncParser.SqlFuncContext ctx) {
-        String sqlFuncName = sqlFuncNameStack.pop();
-        SqlFuncTransform sqlFuncTransform = getTransform(sqlFuncName, dbType);
-        if (sqlFuncTransform == null) {
-            throw new RuntimeException("不支持的SQL函数:" + sqlFuncName);
+        if (hasError) {
+            return;
         }
-        SqlFuncDialect sqlFuncDialect = sqlFuncTransform.transform(dbType, sqlFuncName, sqlFuncParams);
-        sqlFuncLiteral.append(sqlFuncDialect.getSqlFuncLiteral());
-        for (SqlFuncParam param : sqlFuncParams) {
-            if (param.isVariable()) {
-                sqlVariable.put(param.getName(), param.getValue());
-            }
-        }
-        sqlFuncParams.clear();
+        sqlFuncNodeStack.pop();
+//        String sqlFuncName = sqlFuncNameStack.pop();
+//        SqlFuncTransform sqlFuncTransform = getTransform(sqlFuncName, dbType);
+//        if (sqlFuncTransform == null) {
+//            throw new RuntimeException("不支持的SQL函数:" + sqlFuncName);
+//        }
+//        SqlFuncDialect sqlFuncDialect = sqlFuncTransform.transform(dbType, sqlFuncName, sqlFuncParams);
+//        sqlFuncLiteral.append(sqlFuncDialect.getSqlFuncLiteral());
+//        for (SqlFuncParam param : sqlFuncParams) {
+//            if (param.isVariable()) {
+//                sqlVariable.put(param.getName(), param.getValue());
+//            }
+//        }
+//        sqlFuncParams.clear();
     }
 
 //    @Override
@@ -179,22 +190,51 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
 
     @Override
     public void enterSqlParameter(SqlFuncParser.SqlParameterContext ctx) {
+        if (hasError) {
+            return;
+        }
+        SqlFuncNode sqlFuncNode = sqlFuncNodeStack.peek();
+        SqlFuncParser.SqlFuncContext sqlFuncContext = ctx.sqlFunc();
+        SqlFuncParser.JavaVarContext javaVarContext = ctx.javaVar();
+        SqlFuncParser.JavaFuncContext javaFuncContext = ctx.javaFunc();
+        SqlFuncNodeParam param;
+        if (sqlFuncContext != null) {
+            // sql函数
+            String funcName = sqlFuncContext.IDENTIFIER().getSymbol().getText();
+            SqlFuncNode sqlFunc = new SqlFuncNode(funcName);
+            param = new SqlFuncNodeParam(sqlFunc);
+        } else if (javaVarContext != null) {
+            // java变量(链式变量取值)
+
+        } else if (javaFuncContext != null) {
+            // java函数
+
+        } else {
+            // null值 | bool值 | 整数数 | 浮点数 | 字符串值
+            String literal = ctx.getText();
+            SqlFuncParam sqlFuncParam = new SqlFuncParam(false, literal, null, null);
+            param = new SqlFuncNodeParam(sqlFuncParam);
+        }
+        sqlFuncNode.getParams().add(param);
+
 //        if (ctx.sqlFunc() != null || ctx.javaVar() != null || ctx.javaFunc() != null) {
 //            return;
 //        }
 //        final String sqlParameter = ctx.getText();
 //        log.info("sqlParameter      -> {}", sqlParameter);
-
-        if (ctx.javaVar() != null) {
-            String literal = ctx.javaVar().getText();
-            Object param = OgnlCache.getValue(literal, ognlRoot);
-            SqlFuncParam sqlFuncParam = new SqlFuncParam(true, literal, literal, param);
-            sqlFuncParams.add(sqlFuncParam);
-        }
+//        if (ctx.javaVar() != null) {
+//            String literal = ctx.javaVar().getText();
+//            Object param = OgnlCache.getValue(literal, ognlRoot);
+//            SqlFuncParam sqlFuncParam = new SqlFuncParam(true, literal, literal, param);
+//            sqlFuncParams.add(sqlFuncParam);
+//        }
     }
 
 //    @Override
 //    public void exitSqlParameter(SqlFuncParser.SqlParameterContext ctx) {
+//        if (hasError) {
+//            return;
+//        }
 //    }
 
     @Override
