@@ -41,17 +41,17 @@ public class ToDateFuncTransform implements SqlFuncTransform {
         if (params == null || params.size() != 1) {
             throw new SqlFuncTransformException("SQL函数" + funcName + "参数错误");
         }
-        SqlFuncNodeParam sqlFuncNodeParam = params.get(0).copy();
+        SqlFuncNodeParam param = params.get(0).copy();
         SqlFuncNode target;
         if (DbType.MYSQL.equals(dbType)) {
             // #{param}
             target = new SqlFuncNode(null);
             target.setParen(false);
-            target.getParams().add(sqlFuncNodeParam);
+            target.getParams().add(param);
         } else if (DbType.ORACLE.equals(dbType)) {
             // TO_DATE(#{param}, 'YYYY-MM-DD')
             target = new SqlFuncNode("TO_DATE");
-            target.getParams().add(sqlFuncNodeParam);
+            target.getParams().add(param);
             SqlFuncParam sqlFuncParam = new SqlFuncParam(false, "'YYYY-MM-DD'", null, null);
             target.getParams().add(new SqlFuncNodeParam(sqlFuncParam));
         } else if (DbType.SQL_SERVER.equals(dbType)) {
@@ -59,7 +59,7 @@ public class ToDateFuncTransform implements SqlFuncTransform {
             target = new SqlFuncNode("CONVERT");
             SqlFuncParam sqlFuncParam = new SqlFuncParam(false, "datetime", null, null);
             target.getParams().add(new SqlFuncNodeParam(sqlFuncParam));
-            target.getParams().add(sqlFuncNodeParam);
+            target.getParams().add(param);
         } else {
             throw new SqlFuncTransformException("不支持的数据库:" + dbType);
         }

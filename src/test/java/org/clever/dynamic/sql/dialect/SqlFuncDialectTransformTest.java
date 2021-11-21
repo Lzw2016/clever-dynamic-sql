@@ -8,14 +8,12 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncLexer;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParser;
+import org.clever.dynamic.sql.dialect.func.JoinFuncTransform;
 import org.clever.dynamic.sql.dialect.func.ToDateFuncTransform;
 import org.clever.dynamic.sql.dialect.utils.SqlFuncTransformUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +26,7 @@ public class SqlFuncDialectTransformTest {
 
     public SqlFuncDialectTransformTest() {
         SqlFuncTransformUtils.register(new ToDateFuncTransform());
+        SqlFuncTransformUtils.register(new JoinFuncTransform());
     }
 
     public SqlFuncDialectTransform parser(String code, DbType dbType, Map<String, Object> ognlRoot) {
@@ -90,6 +89,15 @@ public class SqlFuncDialectTransformTest {
 
     @Test
     public void t05() {
+        Map<String, Object> bindings = new HashMap<>();
+        bindings.put("java_arr", Arrays.asList(1, 2, 3, 4, 5));
+        final String code = "join(java_arr)";
+        SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, bindings);
+        log.info("--> {} | {}", transform.toSql(), transform.getSqlVariable());
+    }
+
+    @Test
+    public void t99() {
         final LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         Map<String, Object> bindings = new HashMap<>();
         bindings.put("today1", new Date());

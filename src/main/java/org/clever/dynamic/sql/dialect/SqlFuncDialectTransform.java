@@ -60,7 +60,8 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
         if (hasError) {
             throw new ParseSqlFuncException("解析SQL函数失败");
         }
-        return SqlFuncTransformUtils.getSqlVariable(rootSqlFuncNode);
+        SqlFuncNode target = SqlFuncTransformUtils.transform(rootSqlFuncNode, dbType);
+        return SqlFuncTransformUtils.getSqlVariable(target);
     }
 
     /**
