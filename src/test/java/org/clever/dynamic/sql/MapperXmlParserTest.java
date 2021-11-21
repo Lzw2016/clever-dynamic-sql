@@ -3,15 +3,15 @@ package org.clever.dynamic.sql;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.clever.dynamic.sql.builder.SqlSource;
-//import org.clever.dynamic.sql.dialect.func.JoinFuncTransform;
+import org.clever.dynamic.sql.dialect.func.JoinFuncTransform;
 import org.clever.dynamic.sql.dialect.func.ToDateFuncTransform;
+import org.clever.dynamic.sql.dialect.utils.SqlFuncTransformUtils;
 import org.clever.dynamic.sql.domain.EntityA;
 import org.clever.dynamic.sql.domain.EntityB;
 import org.clever.dynamic.sql.domain.EntityMixin;
 import org.clever.dynamic.sql.parsing.XNode;
 import org.clever.dynamic.sql.parsing.XPathParser;
 import org.clever.dynamic.sql.parsing.xml.XMLMapperEntityResolver;
-import org.clever.dynamic.sql.dialect.utils.SqlFuncTransformUtils;
 import org.clever.dynamic.sql.utils.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -159,7 +159,7 @@ public class MapperXmlParserTest {
 
     @Test
     public void t06() {
-//        SqlFuncDialectTransform.register(new JoinFuncTransform());
+        SqlFuncTransformUtils.register(new JoinFuncTransform());
 
         List<Integer> arr = new ArrayList<>();
         arr.add(1);
@@ -171,11 +171,11 @@ public class MapperXmlParserTest {
         Map<String, Object> params = new HashMap<>();
         params.put("arr", arr);
 
-        params.put("id_1", 1);
-        params.put("id_2", 2);
-        params.put("id_3", 3);
-        params.put("id_4", 4);
-        params.put("id_5", 5);
+        params.put("arr_item_1", 1);
+        params.put("arr_item_2", 2);
+        params.put("arr_item_3", 3);
+        params.put("arr_item_4", 4);
+        params.put("arr_item_5", 5);
 
         BoundSql boundSql = sqlSource.getBoundSql(params);
         log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));

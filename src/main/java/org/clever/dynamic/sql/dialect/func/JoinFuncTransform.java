@@ -40,6 +40,7 @@ public class JoinFuncTransform implements SqlFuncTransform {
         final String name = param.getParam().getName();
         final Object value = param.getParam().getValue();
         final SqlFuncNode target = new SqlFuncNode(null);
+        target.setParen(false);
         if (value instanceof Collection) {
             Collection<?> collection = (Collection<?>) value;
             if (collection.isEmpty()) {
