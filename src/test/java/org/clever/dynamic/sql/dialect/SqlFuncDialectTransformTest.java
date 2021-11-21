@@ -102,7 +102,7 @@ public class SqlFuncDialectTransformTest {
         Map<String, Object> bindings = new HashMap<>();
         bindings.put("today1", new Date());
         bindings.put("today2", new Date());
-        String sql = "select * from entity_a where a='@{to_date(today1)}' and b='@{to_date(today2)}' and c=#{abc}";
+        String sql = "select * from entity_a where a='@{to_date(today1)}' and b='@{to_date(today2)}' and c=#{abc} limit 10";
         Pattern pattern = Pattern.compile("'@\\{.+?}'");
         Matcher matcher = pattern.matcher(sql);
         StringBuilder newSql = new StringBuilder();
@@ -112,7 +112,7 @@ public class SqlFuncDialectTransformTest {
             String code = matcher.group();
             code = code.substring(3, code.length() - 2);
             start = matcher.end();
-            SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, bindings);
+            SqlFuncDialectTransform transform = parser(code, DbType.SQL_SERVER, bindings);
             newSql.append(transform.toSql());
             params.putAll(transform.getSqlVariable());
         }
