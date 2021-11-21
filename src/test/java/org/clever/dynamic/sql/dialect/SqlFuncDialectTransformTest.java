@@ -51,7 +51,7 @@ public class SqlFuncDialectTransformTest {
         // sql_func_1(jObject.fieldA.java_func(), jObject.fieldB, "YYYY-DD-MM", jVar2, jVar3)
         final String code = "sql_func_1(jObject.fieldA.java_func(), jObject.fieldB, \"YYYY-DD-MM\", jVar2, jVar3)";
         SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, new HashMap<>());
-        log.info("--> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
+        log.info("--> {} | {}", transform.toSql(), transform.getSqlVariable());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class SqlFuncDialectTransformTest {
         // sql_func_1(jObject.fieldA.java_func(jObject.fieldC, "abc"), jObject.fieldB, "YYYY-DD-MM", jVar2, jVar3)
         final String code = "sql_func_1(jObject.fieldA.java_func(jObject.fieldC, \"abc\"), jObject.fieldB, \"YYYY-DD-MM\", jVar2, jVar3)";
         SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, new HashMap<>());
-        log.info("--> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
+        log.info("--> {} | {}", transform.toSql(), transform.getSqlVariable());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class SqlFuncDialectTransformTest {
         // sql_func_1(jObject.java_func_1(jVar2, "ABC"), jVar3, sql_func_2(jVar3, jObject.java_func_2(jVar2, "ABC")))
         final String code = "sql_func_1(jObject.java_func_1(jVar2, \"ABC\"), jVar3, sql_func_2(jVar3, jObject.java_func_2(jVar2, \"ABC\")))";
         SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, new HashMap<>());
-        log.info("--> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
+        log.info("--> {} | {}", transform.toSql(), transform.getSqlVariable());
     }
 
     @Test
@@ -79,13 +79,13 @@ public class SqlFuncDialectTransformTest {
         final String code = "to_date(today)";
 
         SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, bindings);
-        log.info("MYSQL        --> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
+        log.info("MYSQL        --> {} | {}", transform.toSql(), transform.getSqlVariable());
 
         transform = parser(code, DbType.ORACLE, bindings);
-        log.info("ORACLE       --> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
+        log.info("ORACLE       --> {} | {}", transform.toSql(), transform.getSqlVariable());
 
         transform = parser(code, DbType.SQL_SERVER, bindings);
-        log.info("SQL_SERVER   --> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
+        log.info("SQL_SERVER   --> {} | {}", transform.toSql(), transform.getSqlVariable());
     }
 
     @Test
@@ -105,7 +105,7 @@ public class SqlFuncDialectTransformTest {
             code = code.substring(3, code.length() - 2);
             start = matcher.end();
             SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, bindings);
-            newSql.append(transform.getSqlFuncLiteral());
+            newSql.append(transform.toSql());
             params.putAll(transform.getSqlVariable());
         }
         newSql.append(sql, start, sql.length());

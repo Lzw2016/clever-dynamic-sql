@@ -8,8 +8,8 @@ import org.clever.dynamic.sql.dialect.antlr.SqlFuncLexer;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParser;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParserBaseListener;
 import org.clever.dynamic.sql.dialect.exception.ParseSqlFuncException;
-import org.clever.dynamic.sql.ognl.OgnlCache;
 import org.clever.dynamic.sql.dialect.utils.SqlFuncTransformUtils;
+import org.clever.dynamic.sql.ognl.OgnlCache;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,8 +22,8 @@ import java.util.Stack;
  */
 @Slf4j
 public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
-    private final DbType dbType;
     private final Map<String, Object> ognlRoot;
+    private final DbType dbType; // TODO 删除
     private final SqlFuncLexer lexer;
     private final CommonTokenStream tokenStream;
     private final SqlFuncParser sqlFuncParser;
@@ -45,48 +45,13 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
     /**
      * 转换后的sql函数代码
      */
-    public String getSqlFuncLiteral() {
+    public String toSql() {
         if (hasError) {
             throw new ParseSqlFuncException("解析SQL函数失败");
         }
-        StringBuilder sqlFuncLiteral = new StringBuilder();
-
-
-        return sqlFuncLiteral.toString();
+        SqlFuncNode target = SqlFuncTransformUtils.transform(rootSqlFuncNode, dbType);
+        return SqlFuncTransformUtils.toSql(target);
     }
-
-//    private String getSqlFuncLiteral(SqlFuncNode sqlFunc) {
-//        StringBuilder sqlFuncLiteral = new StringBuilder();
-//
-//        String sqlFuncName = sqlFunc.getFuncName();
-//        SqlFuncTransform sqlFuncTransform = getTransform(sqlFuncName, dbType);
-//        if (sqlFuncTransform == null) {
-//
-//        }
-//
-//
-//        SqlFuncDialect sqlFuncDialect = sqlFuncTransform.transform(dbType, sqlFuncName, sqlFuncParams);
-//        sqlFuncLiteral.append(sqlFuncDialect.getSqlFuncLiteral());
-//        for (SqlFuncParam param : sqlFuncParams) {
-//            if (param.isVariable()) {
-//                sqlVariable.put(param.getName(), param.getValue());
-//            }
-//        }
-//        sqlFuncParams.clear();
-//    }
-
-//    private SqlFuncNode transform(SqlFuncNode sqlFunc) {
-//        if (hasError) {
-//            throw new ParseSqlFuncException("解析SQL函数失败");
-//        }
-//        String sqlFuncName = sqlFunc.getFuncName();
-//        SqlFuncTransform sqlFuncTransform = getTransform(sqlFuncName, dbType);
-//        if (sqlFuncTransform == null) {
-//            return sqlFunc.copy();
-//        }
-//        sqlFuncTransform.
-//        return null;
-//    }
 
     /**
      * sql变量
@@ -105,9 +70,9 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
     public SqlFuncDialectTransform(DbType dbType, Map<String, Object> ognlRoot, SqlFuncLexer lexer, CommonTokenStream tokenStream, SqlFuncParser sqlFuncParser) {
         this.dbType = dbType;
         this.ognlRoot = ognlRoot;
-        this.lexer = lexer;
-        this.tokenStream = tokenStream;
-        this.sqlFuncParser = sqlFuncParser;
+        this.lexer = lexer; // TODO 删除
+        this.tokenStream = tokenStream; // TODO 删除
+        this.sqlFuncParser = sqlFuncParser; // TODO 删除
     }
 
     @Override
@@ -169,12 +134,14 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
             // java变量(链式变量取值)
             String literal = javaVarContext.getText();
             Object value = OgnlCache.getValue(literal, ognlRoot);
+            // TODO name 策略
             SqlFuncParam sqlFuncParam = new SqlFuncParam(true, literal, literal, value);
             param = new SqlFuncNodeParam(sqlFuncParam);
         } else if (javaFuncContext != null) {
             // java函数
             String literal = javaFuncContext.getText();
             Object value = OgnlCache.getValue(literal, ognlRoot);
+            // TODO name 策略
             SqlFuncParam sqlFuncParam = new SqlFuncParam(true, literal, literal, value);
             param = new SqlFuncNodeParam(sqlFuncParam);
         } else {

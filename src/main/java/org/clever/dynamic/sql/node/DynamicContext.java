@@ -99,7 +99,7 @@ public class DynamicContext {
             code = code.substring(3, code.length() - 2);
             start = matcher.end();
             SqlFuncDialectTransform transform = parser(code, DbType.SQL_SERVER);
-            newSql.append(transform.getSqlFuncLiteral());
+            newSql.append(transform.toSql());
             // bindings.putAll(transform.getParams());
         }
         newSql.append(sql, start, sql.length());

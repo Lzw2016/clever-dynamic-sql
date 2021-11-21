@@ -43,23 +43,25 @@ public class ToDateFuncTransform implements SqlFuncTransform {
         }
         SqlFuncNodeParam sqlFuncNodeParam = params.get(0).copy();
         SqlFuncNode target;
-        switch (dbType) {
-            case MYSQL:
-                target = new SqlFuncNode("#{%s}");
-                target.getParams().add(sqlFuncNodeParam);
-                break;
-            case ORACLE:
-                target = new SqlFuncNode("TO_DATE(#{%s}, 'YYYY-MM-DD')");
-                target.getParams().add(sqlFuncNodeParam);
-                SqlFuncParam sqlFuncParam = new SqlFuncParam(false, "'YYYY-MM-DD'", null, null);
-                target.getParams().add(new SqlFuncNodeParam(sqlFuncParam));
-                break;
-            case SQL_SERVER:
-                target = new SqlFuncNode("CONVERT(datetime, #{%s})");
-                target.getParams().add(sqlFuncNodeParam);
-                break;
-            default:
-                throw new SqlFuncTransformException("不支持的数据库:" + dbType);
+        if (DbType.MYSQL.equals(dbType)) {
+            // #{param}
+            target = new SqlFuncNode(null);
+            target.setParen(false);
+            target.getParams().add(sqlFuncNodeParam);
+        } else if (DbType.ORACLE.equals(dbType)) {
+            // TO_DATE(#{param}, 'YYYY-MM-DD')
+            target = new SqlFuncNode("TO_DATE");
+            target.getParams().add(sqlFuncNodeParam);
+            SqlFuncParam sqlFuncParam = new SqlFuncParam(false, "'YYYY-MM-DD'", null, null);
+            target.getParams().add(new SqlFuncNodeParam(sqlFuncParam));
+        } else if (DbType.SQL_SERVER.equals(dbType)) {
+            // CONVERT(datetime, #{param})
+            target = new SqlFuncNode("CONVERT");
+            SqlFuncParam sqlFuncParam = new SqlFuncParam(false, "datetime", null, null);
+            target.getParams().add(new SqlFuncNodeParam(sqlFuncParam));
+            target.getParams().add(sqlFuncNodeParam);
+        } else {
+            throw new SqlFuncTransformException("不支持的数据库:" + dbType);
         }
         return target;
     }

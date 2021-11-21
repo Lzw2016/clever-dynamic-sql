@@ -1,6 +1,8 @@
 package org.clever.dynamic.sql.dialect;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,15 @@ public class SqlFuncNode {
      * SQL函数参数
      */
     private final List<SqlFuncNodeParam> params = new ArrayList<>();
+
+    // --------------------------------------------------------------------- toSql时的可控参数
+
+    /**
+     * 当funcName为空时,参数是否需用括号"()"包裹
+     */
+    @Getter
+    @Setter
+    private boolean paren = true;
 
     public SqlFuncNode(String funcName) {
         this.funcName = funcName;

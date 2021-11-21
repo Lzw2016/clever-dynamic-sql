@@ -2,6 +2,7 @@ package org.clever.dynamic.sql.dialect.utils;
 
 import org.clever.dynamic.sql.dialect.*;
 import org.clever.dynamic.sql.dialect.exception.SqlFuncTransformAlreadyExistsException;
+import org.clever.dynamic.sql.utils.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -98,12 +99,43 @@ public class SqlFuncTransformUtils {
     }
 
     /**
-     * 转换后的sql函数代码
+     * 递归获取转换后的sql函数代码 -- int uniqueNumber = 0;
      */
     public static String toSql(SqlFuncNode sqlFunc) {
-
-
-
-        return "";
+        final String sqlFuncName = sqlFunc.getFuncName();
+        final List<SqlFuncNodeParam> params = sqlFunc.getParams();
+        final boolean paren = StringUtils.Instance.isNotBlank(sqlFuncName) || sqlFunc.isParen();
+        StringBuilder sql = new StringBuilder();
+        if (StringUtils.Instance.isNotBlank(sqlFuncName)) {
+            sql.append(sqlFuncName);
+        }
+        if (paren) {
+            sql.append("(");
+        }
+        for (int idx = 0; idx < params.size(); idx++) {
+            SqlFuncNodeParam param = params.get(idx);
+            if (idx > 0) {
+                sql.append(", ");
+            }
+            if (SqlFuncNodeParamEnum.SQL_FUNC.equals(param.getType())) {
+                sql.append(toSql(param.getFunc()));
+            } else {
+                SqlFuncParam sqlFuncParam = param.getParam();
+                if (sqlFuncParam.isVariable()) {
+                    sql.append("#{").append(sqlFuncParam.getName()).append("}");
+                } else {
+                    String literal = sqlFuncParam.getLiteral();
+                    literal = StringUtils.Instance.trim(literal);
+                    if (literal.startsWith("\"") && literal.endsWith("\"")) {
+                        literal = "'" + literal.substring(1, literal.length() - 1) + "'";
+                    }
+                    sql.append(literal);
+                }
+            }
+        }
+        if (paren) {
+            sql.append(")");
+        }
+        return sql.toString();
     }
 }
