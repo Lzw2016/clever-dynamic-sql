@@ -87,6 +87,9 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
      * 转换后的sql函数代码
      */
     public String getSqlFuncLiteral() {
+        if (hasError) {
+            throw new ParseSqlFuncException("解析SQL函数失败");
+        }
         StringBuilder sqlFuncLiteral = new StringBuilder();
 
 
@@ -113,8 +116,10 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
 //        sqlFuncParams.clear();
 //    }
 
-
     private SqlFuncNode transform(SqlFuncNode sqlFunc) {
+        if (hasError) {
+            throw new ParseSqlFuncException("解析SQL函数失败");
+        }
         String sqlFuncName = sqlFunc.getFuncName();
         SqlFuncTransform sqlFuncTransform = getTransform(sqlFuncName, dbType);
         if (sqlFuncTransform == null) {
@@ -131,28 +136,7 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
         if (hasError) {
             throw new ParseSqlFuncException("解析SQL函数失败");
         }
-        return getSqlVariable(rootSqlFuncNode);
-    }
-
-    /**
-     * 递归读取sql变量
-     */
-    private LinkedHashMap<String, Object> getSqlVariable(SqlFuncNode sqlFunc) {
-        LinkedHashMap<String, Object> sqlVariable = new LinkedHashMap<>();
-        for (SqlFuncNodeParam param : sqlFunc.getParams()) {
-            if (SqlFuncNodeParamEnum.SQL_FUNC.equals(param.getType())) {
-                SqlFuncNode childSqlFunc = param.getFunc();
-                sqlVariable.putAll(getSqlVariable(childSqlFunc));
-            } else {
-                SqlFuncParam sqlFuncParam = param.getParam();
-                if (sqlFuncParam.isVariable()) {
-                    String name = sqlFuncParam.getName();
-                    Object value = sqlFuncParam.getValue();
-                    sqlVariable.put(name, value);
-                }
-            }
-        }
-        return sqlVariable;
+        return rootSqlFuncNode.getSqlVariable();
     }
 
     /**
