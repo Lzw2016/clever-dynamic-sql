@@ -15,10 +15,10 @@ public class SqlFuncParam implements Serializable {
      */
     private final boolean variable;
     /**
-     * 参数字面值
+     * 参数字面值(源码)
      * <pre>
-     * 1.参数是静态值，就使用“literal(字面量)”
-     * 2.参数是变量，就使用“name(参数名)”
+     * 1.参数是静态值，就是静态值的源码
+     * 2.参数是变量，就是变量的源码
      * </pre>
      */
     private final String literal;
@@ -44,5 +44,9 @@ public class SqlFuncParam implements Serializable {
         this.literal = literal;
         this.name = name;
         this.value = value;
+    }
+
+    public SqlFuncParam copy() {
+        return new SqlFuncParam(this.variable, this.literal, this.name, this.value);
     }
 }

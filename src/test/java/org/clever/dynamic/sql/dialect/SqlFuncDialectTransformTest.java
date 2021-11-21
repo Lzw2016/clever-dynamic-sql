@@ -49,21 +49,24 @@ public class SqlFuncDialectTransformTest {
     public void t01() {
         // sql_func_1(jObject.fieldA.java_func(), jObject.fieldB, "YYYY-DD-MM", jVar2, jVar3)
         final String code = "sql_func_1(jObject.fieldA.java_func(), jObject.fieldB, \"YYYY-DD-MM\", jVar2, jVar3)";
-        parser(code, DbType.MYSQL, new HashMap<>());
+        SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, new HashMap<>());
+        log.info("--> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
     }
 
     @Test
     public void t02() {
         // sql_func_1(jObject.fieldA.java_func(jObject.fieldC, "abc"), jObject.fieldB, "YYYY-DD-MM", jVar2, jVar3)
         final String code = "sql_func_1(jObject.fieldA.java_func(jObject.fieldC, \"abc\"), jObject.fieldB, \"YYYY-DD-MM\", jVar2, jVar3)";
-        parser(code, DbType.MYSQL, new HashMap<>());
+        SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, new HashMap<>());
+        log.info("--> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
     }
 
     @Test
     public void t03() {
         // sql_func_1(jObject.java_func_1(jVar2, "ABC"), jVar3, sql_func_2(jVar3, jObject.java_func_2(jVar2, "ABC")))
         final String code = "sql_func_1(jObject.java_func_1(jVar2, \"ABC\"), jVar3, sql_func_2(jVar3, jObject.java_func_2(jVar2, \"ABC\")))";
-        parser(code, DbType.MYSQL, new HashMap<>());
+        SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, new HashMap<>());
+        log.info("--> {} | {}", transform.getSqlFuncLiteral(), transform.getSqlVariable());
     }
 
     @Test

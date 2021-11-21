@@ -2,12 +2,15 @@ package org.clever.dynamic.sql.dialect.func;
 
 import lombok.extern.slf4j.Slf4j;
 import org.clever.dynamic.sql.dialect.DbType;
-import org.clever.dynamic.sql.dialect.SqlFuncDialect;
-import org.clever.dynamic.sql.dialect.SqlFuncParam;
+import org.clever.dynamic.sql.dialect.SqlFuncNode;
+import org.clever.dynamic.sql.dialect.SqlFuncNodeParam;
 import org.clever.dynamic.sql.dialect.SqlFuncTransform;
+import org.clever.dynamic.sql.dialect.exception.SqlFuncTransformException;
 
-import java.util.LinkedHashMap;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 作者：lizw <br/>
@@ -17,6 +20,12 @@ import java.util.List;
 public class ToDateFuncTransform implements SqlFuncTransform {
     public static final String FUNC_NAME = "to_date";
 
+    private static final Set<DbType> DB_TYPES = Collections.unmodifiableSet(new HashSet<DbType>() {{
+        add(DbType.MYSQL);
+        add(DbType.ORACLE);
+        add(DbType.SQL_SERVER);
+    }});
+
     @Override
     public String getFuncName() {
         return FUNC_NAME;
@@ -24,26 +33,36 @@ public class ToDateFuncTransform implements SqlFuncTransform {
 
     @Override
     public boolean isSupport(DbType dbType) {
-        return true;
+        return DB_TYPES.contains(dbType);
     }
 
     @Override
-    public SqlFuncDialect transform(DbType dbType, String funcName, List<SqlFuncParam> params) {
+    public SqlFuncNode transform(DbType dbType, SqlFuncNode sqlFuncNode) {
+        // to_date(param)
+        final String funcName = sqlFuncNode.getFuncName();
+        final List<SqlFuncNodeParam> params = sqlFuncNode.getParams();
         if (params == null || params.size() != 1) {
-            throw new IllegalArgumentException("SQL函数" + funcName + "参数错误");
+            throw new SqlFuncTransformException("SQL函数" + funcName + "参数错误");
         }
-        SqlFuncParam sqlFuncParam = params.get(0);
-        LinkedHashMap<String, Object> sqlParams = new LinkedHashMap<>();
-        sqlParams.put(sqlFuncParam.getName(), sqlFuncParam.getValue());
+        SqlFuncNodeParam sqlFuncNodeParam = params.get(0);
+
+        SqlFuncNode resultFunc;
         switch (dbType) {
             case MYSQL:
-                return new SqlFuncDialect(String.format("#{%s}", sqlFuncParam.getLiteral()), sqlParams);
+                resultFunc = new SqlFuncNode("#{%s}");
+                resultFunc.getParams().add(sqlFuncNodeParam);
+                break;
             case ORACLE:
-                return new SqlFuncDialect(String.format("TO_DATE(#{%s}, 'YYYY-MM-DD')", sqlFuncParam.getLiteral()), sqlParams);
+                resultFunc = new SqlFuncNode("TO_DATE(#{%s}, 'YYYY-MM-DD')");
+                resultFunc.getParams().add(sqlFuncNodeParam);
+                break;
             case SQL_SERVER:
-                return new SqlFuncDialect(String.format("CONVERT(datetime, #{%s})", sqlFuncParam.getLiteral()), sqlParams);
+                resultFunc = new SqlFuncNode("CONVERT(datetime, #{%s})");
+                resultFunc.getParams().add(sqlFuncNodeParam);
+                break;
             default:
-                throw new RuntimeException("不支持的数据库:" + dbType);
+                throw new SqlFuncTransformException("不支持的数据库:" + dbType);
         }
+        return resultFunc;
     }
 }

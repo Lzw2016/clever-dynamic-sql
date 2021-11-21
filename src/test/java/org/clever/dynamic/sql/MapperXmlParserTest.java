@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.clever.dynamic.sql.builder.SqlSource;
 import org.clever.dynamic.sql.dialect.SqlFuncDialectTransform;
-import org.clever.dynamic.sql.dialect.func.JoinFuncTransform;
+//import org.clever.dynamic.sql.dialect.func.JoinFuncTransform;
 import org.clever.dynamic.sql.dialect.func.ToDateFuncTransform;
 import org.clever.dynamic.sql.domain.EntityA;
 import org.clever.dynamic.sql.domain.EntityB;
@@ -159,7 +159,7 @@ public class MapperXmlParserTest {
 
     @Test
     public void t06() {
-        SqlFuncDialectTransform.register(new JoinFuncTransform());
+//        SqlFuncDialectTransform.register(new JoinFuncTransform());
 
         List<Integer> arr = new ArrayList<>();
         arr.add(1);
