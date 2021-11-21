@@ -8,16 +8,13 @@ import org.clever.dynamic.sql.dialect.antlr.SqlFuncLexer;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParser;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParserBaseListener;
 import org.clever.dynamic.sql.dialect.exception.ParseSqlFuncException;
-import org.clever.dynamic.sql.dialect.exception.SqlFuncTransformAlreadyExistsException;
 import org.clever.dynamic.sql.ognl.OgnlCache;
+import org.clever.dynamic.sql.dialect.utils.SqlFuncTransformUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 作者：lizw <br/>
@@ -25,44 +22,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Slf4j
 public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
-    /**
-     * {@code Map<FuncName, List<SqlFuncTransform>>}
-     */
-    private static final ConcurrentMap<String, CopyOnWriteArrayList<SqlFuncTransform>> TRANSFORMS_MAP = new ConcurrentHashMap<>();
-
-    /**
-     * 注册SqlFuncTransform
-     */
-    public static void register(SqlFuncTransform sqlFuncTransform) {
-        if (sqlFuncTransform == null) {
-            return;
-        }
-        CopyOnWriteArrayList<SqlFuncTransform> transforms = TRANSFORMS_MAP.computeIfAbsent(sqlFuncTransform.getFuncName(), funcName -> new CopyOnWriteArrayList<>());
-        if (transforms.stream().anyMatch(transform -> Objects.equals(transform.getClass(), sqlFuncTransform.getClass()))) {
-            throw new SqlFuncTransformAlreadyExistsException("当前SqlFuncTransform类型已存在，class=" + sqlFuncTransform.getClass().getName());
-        }
-        transforms.add(sqlFuncTransform);
-    }
-
-    /**
-     * 获取 SqlFuncTransform
-     *
-     * @param funcName SQL函数名称
-     * @param dbType   数据库类型
-     */
-    public static SqlFuncTransform getTransform(String funcName, DbType dbType) {
-        CopyOnWriteArrayList<SqlFuncTransform> transforms = TRANSFORMS_MAP.get(funcName);
-        if (transforms == null || transforms.isEmpty()) {
-            return null;
-        }
-        for (SqlFuncTransform transform : transforms) {
-            if (transform.isSupport(dbType)) {
-                return transform;
-            }
-        }
-        return null;
-    }
-
     private final DbType dbType;
     private final Map<String, Object> ognlRoot;
     private final SqlFuncLexer lexer;
@@ -116,18 +75,18 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
 //        sqlFuncParams.clear();
 //    }
 
-    private SqlFuncNode transform(SqlFuncNode sqlFunc) {
-        if (hasError) {
-            throw new ParseSqlFuncException("解析SQL函数失败");
-        }
-        String sqlFuncName = sqlFunc.getFuncName();
-        SqlFuncTransform sqlFuncTransform = getTransform(sqlFuncName, dbType);
-        if (sqlFuncTransform == null) {
-            return sqlFunc.copy();
-        }
-
-        return null;
-    }
+//    private SqlFuncNode transform(SqlFuncNode sqlFunc) {
+//        if (hasError) {
+//            throw new ParseSqlFuncException("解析SQL函数失败");
+//        }
+//        String sqlFuncName = sqlFunc.getFuncName();
+//        SqlFuncTransform sqlFuncTransform = getTransform(sqlFuncName, dbType);
+//        if (sqlFuncTransform == null) {
+//            return sqlFunc.copy();
+//        }
+//        sqlFuncTransform.
+//        return null;
+//    }
 
     /**
      * sql变量
@@ -136,7 +95,7 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
         if (hasError) {
             throw new ParseSqlFuncException("解析SQL函数失败");
         }
-        return rootSqlFuncNode.getSqlVariable();
+        return SqlFuncTransformUtils.getSqlVariable(rootSqlFuncNode);
     }
 
     /**
@@ -230,5 +189,6 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
     @Override
     public void visitErrorNode(ErrorNode node) {
         hasError = true;
+        // throw new ParseSqlFuncException("解析SQL函数失败");
     }
 }

@@ -3,7 +3,6 @@ package org.clever.dynamic.sql.dialect;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -31,33 +30,5 @@ public class SqlFuncNode {
             sqlFuncNode.getParams().add(param.copy());
         }
         return sqlFuncNode;
-    }
-
-    /**
-     * 递归读取sql变量
-     */
-    public LinkedHashMap<String, Object> getSqlVariable() {
-        LinkedHashMap<String, Object> sqlVariable = new LinkedHashMap<>();
-        for (SqlFuncNodeParam param : params) {
-            if (SqlFuncNodeParamEnum.SQL_FUNC.equals(param.getType())) {
-                SqlFuncNode childSqlFunc = param.getFunc();
-                sqlVariable.putAll(childSqlFunc.getSqlVariable());
-            } else {
-                SqlFuncParam sqlFuncParam = param.getParam();
-                if (sqlFuncParam.isVariable()) {
-                    String name = sqlFuncParam.getName();
-                    Object value = sqlFuncParam.getValue();
-                    sqlVariable.put(name, value);
-                }
-            }
-        }
-        return sqlVariable;
-    }
-
-    /**
-     * 转换后的sql函数代码
-     */
-    public String toSql() {
-        return "";
     }
 }

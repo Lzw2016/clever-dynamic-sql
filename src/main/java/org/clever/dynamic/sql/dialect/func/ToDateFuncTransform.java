@@ -1,10 +1,7 @@
 package org.clever.dynamic.sql.dialect.func;
 
 import lombok.extern.slf4j.Slf4j;
-import org.clever.dynamic.sql.dialect.DbType;
-import org.clever.dynamic.sql.dialect.SqlFuncNode;
-import org.clever.dynamic.sql.dialect.SqlFuncNodeParam;
-import org.clever.dynamic.sql.dialect.SqlFuncTransform;
+import org.clever.dynamic.sql.dialect.*;
 import org.clever.dynamic.sql.dialect.exception.SqlFuncTransformException;
 
 import java.util.Collections;
@@ -37,32 +34,33 @@ public class ToDateFuncTransform implements SqlFuncTransform {
     }
 
     @Override
-    public SqlFuncNode transform(DbType dbType, SqlFuncNode sqlFuncNode) {
+    public SqlFuncNode transform(DbType dbType, SqlFuncNode src) {
         // to_date(param)
-        final String funcName = sqlFuncNode.getFuncName();
-        final List<SqlFuncNodeParam> params = sqlFuncNode.getParams();
+        final String funcName = src.getFuncName();
+        final List<SqlFuncNodeParam> params = src.getParams();
         if (params == null || params.size() != 1) {
             throw new SqlFuncTransformException("SQL函数" + funcName + "参数错误");
         }
-        SqlFuncNodeParam sqlFuncNodeParam = params.get(0);
-
-        SqlFuncNode resultFunc;
+        SqlFuncNodeParam sqlFuncNodeParam = params.get(0).copy();
+        SqlFuncNode target;
         switch (dbType) {
             case MYSQL:
-                resultFunc = new SqlFuncNode("#{%s}");
-                resultFunc.getParams().add(sqlFuncNodeParam);
+                target = new SqlFuncNode("#{%s}");
+                target.getParams().add(sqlFuncNodeParam);
                 break;
             case ORACLE:
-                resultFunc = new SqlFuncNode("TO_DATE(#{%s}, 'YYYY-MM-DD')");
-                resultFunc.getParams().add(sqlFuncNodeParam);
+                target = new SqlFuncNode("TO_DATE(#{%s}, 'YYYY-MM-DD')");
+                target.getParams().add(sqlFuncNodeParam);
+                SqlFuncParam sqlFuncParam = new SqlFuncParam(false, "'YYYY-MM-DD'", null, null);
+                target.getParams().add(new SqlFuncNodeParam(sqlFuncParam));
                 break;
             case SQL_SERVER:
-                resultFunc = new SqlFuncNode("CONVERT(datetime, #{%s})");
-                resultFunc.getParams().add(sqlFuncNodeParam);
+                target = new SqlFuncNode("CONVERT(datetime, #{%s})");
+                target.getParams().add(sqlFuncNodeParam);
                 break;
             default:
                 throw new SqlFuncTransformException("不支持的数据库:" + dbType);
         }
-        return resultFunc;
+        return target;
     }
 }

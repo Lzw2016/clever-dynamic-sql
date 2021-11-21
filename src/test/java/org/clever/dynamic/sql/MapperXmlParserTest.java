@@ -3,7 +3,6 @@ package org.clever.dynamic.sql;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.clever.dynamic.sql.builder.SqlSource;
-import org.clever.dynamic.sql.dialect.SqlFuncDialectTransform;
 //import org.clever.dynamic.sql.dialect.func.JoinFuncTransform;
 import org.clever.dynamic.sql.dialect.func.ToDateFuncTransform;
 import org.clever.dynamic.sql.domain.EntityA;
@@ -12,6 +11,7 @@ import org.clever.dynamic.sql.domain.EntityMixin;
 import org.clever.dynamic.sql.parsing.XNode;
 import org.clever.dynamic.sql.parsing.XPathParser;
 import org.clever.dynamic.sql.parsing.xml.XMLMapperEntityResolver;
+import org.clever.dynamic.sql.dialect.utils.SqlFuncTransformUtils;
 import org.clever.dynamic.sql.utils.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -144,7 +144,7 @@ public class MapperXmlParserTest {
 
     @Test
     public void t05() {
-        SqlFuncDialectTransform.register(new ToDateFuncTransform());
+        SqlFuncTransformUtils.register(new ToDateFuncTransform());
 
         SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t05"));
         Map<String, Object> params = new HashMap<>();

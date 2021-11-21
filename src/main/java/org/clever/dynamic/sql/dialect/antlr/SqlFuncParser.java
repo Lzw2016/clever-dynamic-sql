@@ -139,10 +139,10 @@ public class SqlFuncParser extends Parser {
 			{
 			setState(14);
 			match(IDENTIFIER);
-			setState(19);
+			setState(17); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==DOT) {
+			do {
 				{
 				{
 				setState(15);
@@ -151,27 +151,27 @@ public class SqlFuncParser extends Parser {
 				match(IDENTIFIER);
 				}
 				}
-				setState(21);
+				setState(19); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			}
-			setState(22);
+			} while ( _la==DOT );
+			setState(21);
 			match(LPAREN);
-			setState(26);
+			setState(25);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IDENTIFIER) | (1L << NULL_LITERAL) | (1L << BOOL_LITERAL) | (1L << DECIMAL_LITERAL) | (1L << FLOAT_LITERAL) | (1L << STRING_LITERAL))) != 0)) {
 				{
 				{
-				setState(23);
+				setState(22);
 				javaParameterList();
 				}
 				}
-				setState(28);
+				setState(27);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(29);
+			setState(28);
 			match(RPAREN);
 			}
 		}
@@ -223,21 +223,21 @@ public class SqlFuncParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(31);
+			setState(30);
 			javaParameter();
-			setState(36);
+			setState(35);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				setState(32);
+				setState(31);
 				match(COMMA);
-				setState(33);
+				setState(32);
 				javaParameter();
 				}
 				}
-				setState(38);
+				setState(37);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -289,55 +289,55 @@ public class SqlFuncParser extends Parser {
 		JavaParameterContext _localctx = new JavaParameterContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_javaParameter);
 		try {
-			setState(46);
+			setState(45);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(39);
+				setState(38);
 				match(NULL_LITERAL);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(40);
+				setState(39);
 				match(BOOL_LITERAL);
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(41);
+				setState(40);
 				match(DECIMAL_LITERAL);
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(42);
+				setState(41);
 				match(FLOAT_LITERAL);
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(43);
+				setState(42);
 				match(STRING_LITERAL);
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(44);
+				setState(43);
 				javaVar();
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(45);
+				setState(44);
 				javaFunc();
 				}
 				break;
@@ -389,21 +389,21 @@ public class SqlFuncParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(48);
+			setState(47);
 			match(IDENTIFIER);
-			setState(53);
+			setState(52);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==DOT) {
 				{
 				{
-				setState(49);
+				setState(48);
 				match(DOT);
-				setState(50);
+				setState(49);
 				match(IDENTIFIER);
 				}
 				}
-				setState(55);
+				setState(54);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -456,25 +456,25 @@ public class SqlFuncParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(56);
+			setState(55);
 			match(IDENTIFIER);
-			setState(57);
+			setState(56);
 			match(LPAREN);
-			setState(61);
+			setState(60);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IDENTIFIER) | (1L << NULL_LITERAL) | (1L << BOOL_LITERAL) | (1L << DECIMAL_LITERAL) | (1L << FLOAT_LITERAL) | (1L << STRING_LITERAL))) != 0)) {
 				{
 				{
-				setState(58);
+				setState(57);
 				sqlParameterList();
 				}
 				}
-				setState(63);
+				setState(62);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(64);
+			setState(63);
 			match(RPAREN);
 			}
 		}
@@ -526,21 +526,21 @@ public class SqlFuncParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(66);
+			setState(65);
 			sqlParameter();
-			setState(71);
+			setState(70);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				setState(67);
+				setState(66);
 				match(COMMA);
-				setState(68);
+				setState(67);
 				sqlParameter();
 				}
 				}
-				setState(73);
+				setState(72);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -595,62 +595,62 @@ public class SqlFuncParser extends Parser {
 		SqlParameterContext _localctx = new SqlParameterContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_sqlParameter);
 		try {
-			setState(82);
+			setState(81);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(74);
+				setState(73);
 				match(NULL_LITERAL);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(75);
+				setState(74);
 				match(BOOL_LITERAL);
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(76);
+				setState(75);
 				match(DECIMAL_LITERAL);
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(77);
+				setState(76);
 				match(FLOAT_LITERAL);
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(78);
+				setState(77);
 				match(STRING_LITERAL);
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(79);
+				setState(78);
 				sqlFunc();
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(80);
+				setState(79);
 				javaVar();
 				}
 				break;
 			case 8:
 				enterOuterAlt(_localctx, 8);
 				{
-				setState(81);
+				setState(80);
 				javaFunc();
 				}
 				break;
@@ -668,29 +668,29 @@ public class SqlFuncParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\rW\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\3\2\3\2\3\2\7\2\24\n\2\f\2"+
-		"\16\2\27\13\2\3\2\3\2\7\2\33\n\2\f\2\16\2\36\13\2\3\2\3\2\3\3\3\3\3\3"+
-		"\7\3%\n\3\f\3\16\3(\13\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4\61\n\4\3\5\3"+
-		"\5\3\5\7\5\66\n\5\f\5\16\59\13\5\3\6\3\6\3\6\7\6>\n\6\f\6\16\6A\13\6\3"+
-		"\6\3\6\3\7\3\7\3\7\7\7H\n\7\f\7\16\7K\13\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b"+
-		"\3\b\5\bU\n\b\3\b\2\2\t\2\4\6\b\n\f\16\2\2\2b\2\20\3\2\2\2\4!\3\2\2\2"+
-		"\6\60\3\2\2\2\b\62\3\2\2\2\n:\3\2\2\2\fD\3\2\2\2\16T\3\2\2\2\20\25\7\7"+
-		"\2\2\21\22\7\6\2\2\22\24\7\7\2\2\23\21\3\2\2\2\24\27\3\2\2\2\25\23\3\2"+
-		"\2\2\25\26\3\2\2\2\26\30\3\2\2\2\27\25\3\2\2\2\30\34\7\3\2\2\31\33\5\4"+
-		"\3\2\32\31\3\2\2\2\33\36\3\2\2\2\34\32\3\2\2\2\34\35\3\2\2\2\35\37\3\2"+
-		"\2\2\36\34\3\2\2\2\37 \7\4\2\2 \3\3\2\2\2!&\5\6\4\2\"#\7\5\2\2#%\5\6\4"+
-		"\2$\"\3\2\2\2%(\3\2\2\2&$\3\2\2\2&\'\3\2\2\2\'\5\3\2\2\2(&\3\2\2\2)\61"+
-		"\7\b\2\2*\61\7\t\2\2+\61\7\n\2\2,\61\7\13\2\2-\61\7\f\2\2.\61\5\b\5\2"+
-		"/\61\5\2\2\2\60)\3\2\2\2\60*\3\2\2\2\60+\3\2\2\2\60,\3\2\2\2\60-\3\2\2"+
-		"\2\60.\3\2\2\2\60/\3\2\2\2\61\7\3\2\2\2\62\67\7\7\2\2\63\64\7\6\2\2\64"+
-		"\66\7\7\2\2\65\63\3\2\2\2\669\3\2\2\2\67\65\3\2\2\2\678\3\2\2\28\t\3\2"+
-		"\2\29\67\3\2\2\2:;\7\7\2\2;?\7\3\2\2<>\5\f\7\2=<\3\2\2\2>A\3\2\2\2?=\3"+
-		"\2\2\2?@\3\2\2\2@B\3\2\2\2A?\3\2\2\2BC\7\4\2\2C\13\3\2\2\2DI\5\16\b\2"+
-		"EF\7\5\2\2FH\5\16\b\2GE\3\2\2\2HK\3\2\2\2IG\3\2\2\2IJ\3\2\2\2J\r\3\2\2"+
-		"\2KI\3\2\2\2LU\7\b\2\2MU\7\t\2\2NU\7\n\2\2OU\7\13\2\2PU\7\f\2\2QU\5\n"+
-		"\6\2RU\5\b\5\2SU\5\2\2\2TL\3\2\2\2TM\3\2\2\2TN\3\2\2\2TO\3\2\2\2TP\3\2"+
-		"\2\2TQ\3\2\2\2TR\3\2\2\2TS\3\2\2\2U\17\3\2\2\2\n\25\34&\60\67?IT";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\rV\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\3\2\3\2\3\2\6\2\24\n\2\r\2"+
+		"\16\2\25\3\2\3\2\7\2\32\n\2\f\2\16\2\35\13\2\3\2\3\2\3\3\3\3\3\3\7\3$"+
+		"\n\3\f\3\16\3\'\13\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4\60\n\4\3\5\3\5\3"+
+		"\5\7\5\65\n\5\f\5\16\58\13\5\3\6\3\6\3\6\7\6=\n\6\f\6\16\6@\13\6\3\6\3"+
+		"\6\3\7\3\7\3\7\7\7G\n\7\f\7\16\7J\13\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b"+
+		"\5\bT\n\b\3\b\2\2\t\2\4\6\b\n\f\16\2\2\2a\2\20\3\2\2\2\4 \3\2\2\2\6/\3"+
+		"\2\2\2\b\61\3\2\2\2\n9\3\2\2\2\fC\3\2\2\2\16S\3\2\2\2\20\23\7\7\2\2\21"+
+		"\22\7\6\2\2\22\24\7\7\2\2\23\21\3\2\2\2\24\25\3\2\2\2\25\23\3\2\2\2\25"+
+		"\26\3\2\2\2\26\27\3\2\2\2\27\33\7\3\2\2\30\32\5\4\3\2\31\30\3\2\2\2\32"+
+		"\35\3\2\2\2\33\31\3\2\2\2\33\34\3\2\2\2\34\36\3\2\2\2\35\33\3\2\2\2\36"+
+		"\37\7\4\2\2\37\3\3\2\2\2 %\5\6\4\2!\"\7\5\2\2\"$\5\6\4\2#!\3\2\2\2$\'"+
+		"\3\2\2\2%#\3\2\2\2%&\3\2\2\2&\5\3\2\2\2\'%\3\2\2\2(\60\7\b\2\2)\60\7\t"+
+		"\2\2*\60\7\n\2\2+\60\7\13\2\2,\60\7\f\2\2-\60\5\b\5\2.\60\5\2\2\2/(\3"+
+		"\2\2\2/)\3\2\2\2/*\3\2\2\2/+\3\2\2\2/,\3\2\2\2/-\3\2\2\2/.\3\2\2\2\60"+
+		"\7\3\2\2\2\61\66\7\7\2\2\62\63\7\6\2\2\63\65\7\7\2\2\64\62\3\2\2\2\65"+
+		"8\3\2\2\2\66\64\3\2\2\2\66\67\3\2\2\2\67\t\3\2\2\28\66\3\2\2\29:\7\7\2"+
+		"\2:>\7\3\2\2;=\5\f\7\2<;\3\2\2\2=@\3\2\2\2><\3\2\2\2>?\3\2\2\2?A\3\2\2"+
+		"\2@>\3\2\2\2AB\7\4\2\2B\13\3\2\2\2CH\5\16\b\2DE\7\5\2\2EG\5\16\b\2FD\3"+
+		"\2\2\2GJ\3\2\2\2HF\3\2\2\2HI\3\2\2\2I\r\3\2\2\2JH\3\2\2\2KT\7\b\2\2LT"+
+		"\7\t\2\2MT\7\n\2\2NT\7\13\2\2OT\7\f\2\2PT\5\n\6\2QT\5\b\5\2RT\5\2\2\2"+
+		"SK\3\2\2\2SL\3\2\2\2SM\3\2\2\2SN\3\2\2\2SO\3\2\2\2SP\3\2\2\2SQ\3\2\2\2"+
+		"SR\3\2\2\2T\17\3\2\2\2\n\25\33%/\66>HS";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

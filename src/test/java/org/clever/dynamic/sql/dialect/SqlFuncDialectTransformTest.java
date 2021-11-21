@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncLexer;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParser;
 import org.clever.dynamic.sql.dialect.func.ToDateFuncTransform;
+import org.clever.dynamic.sql.dialect.utils.SqlFuncTransformUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -26,7 +27,7 @@ import java.util.regex.Pattern;
 public class SqlFuncDialectTransformTest {
 
     public SqlFuncDialectTransformTest() {
-        SqlFuncDialectTransform.register(new ToDateFuncTransform());
+        SqlFuncTransformUtils.register(new ToDateFuncTransform());
     }
 
     public SqlFuncDialectTransform parser(String code, DbType dbType, Map<String, Object> ognlRoot) {

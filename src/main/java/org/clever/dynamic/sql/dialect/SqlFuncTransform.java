@@ -18,10 +18,11 @@ public interface SqlFuncTransform {
     boolean isSupport(DbType dbType);
 
     /**
-     * 函数方言转换
+     * 函数方言转换<br/>
+     * <b>注意：不可修改原函数对象(src)内容</b>
      *
-     * @param dbType      数据库类型
-     * @param sqlFuncNode sql函数
+     * @param dbType 数据库类型
+     * @param src    sql函数
      */
-    SqlFuncNode transform(DbType dbType, SqlFuncNode sqlFuncNode);
+    SqlFuncNode transform(DbType dbType, SqlFuncNode src);
 }

@@ -4,7 +4,7 @@ options { tokenVocab=SqlFuncLexer; }
 
 // java语言函数
 javaFunc
-    : IDENTIFIER ('.' IDENTIFIER)* '(' javaParameterList* ')'
+    : IDENTIFIER ('.' IDENTIFIER)+ '(' javaParameterList* ')'
     ;
 
 javaParameterList
