@@ -2,17 +2,21 @@ package org.clever.dynamic.sql.dialect;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncLexer;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParser;
 import org.clever.dynamic.sql.dialect.antlr.SqlFuncParserBaseListener;
 import org.clever.dynamic.sql.dialect.exception.ParseSqlFuncException;
 import org.clever.dynamic.sql.dialect.utils.SqlFuncTransformUtils;
 import org.clever.dynamic.sql.ognl.OgnlCache;
+import org.clever.dynamic.sql.utils.SqlParameterNameStrategy;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -22,11 +26,7 @@ import java.util.Stack;
  */
 @Slf4j
 public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
-    private final Map<String, Object> ognlRoot;
-    private final DbType dbType; // TODO 删除
-    private final SqlFuncLexer lexer;
-    private final CommonTokenStream tokenStream;
-    private final SqlFuncParser sqlFuncParser;
+    private final Object ognlRoot;
 
     /**
      * 是否有解析错误
@@ -45,7 +45,7 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
     /**
      * 转换后的sql函数代码
      */
-    public String toSql() {
+    public String toSql(DbType dbType) {
         if (hasError) {
             throw new ParseSqlFuncException("解析SQL函数失败");
         }
@@ -56,7 +56,7 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
     /**
      * sql变量
      */
-    public LinkedHashMap<String, Object> getSqlVariable() {
+    public LinkedHashMap<String, Object> getSqlVariable(DbType dbType) {
         if (hasError) {
             throw new ParseSqlFuncException("解析SQL函数失败");
         }
@@ -65,15 +65,18 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
     }
 
     /**
-     * @param dbType   数据库类型
+     * @param sqlFuc   数据库函数(原始函数)
      * @param ognlRoot ognl表达式的root对象
      */
-    public SqlFuncDialectTransform(DbType dbType, Map<String, Object> ognlRoot, SqlFuncLexer lexer, CommonTokenStream tokenStream, SqlFuncParser sqlFuncParser) {
-        this.dbType = dbType;
+    public SqlFuncDialectTransform(String sqlFuc, Object ognlRoot) {
         this.ognlRoot = ognlRoot;
-        this.lexer = lexer; // TODO 删除
-        this.tokenStream = tokenStream; // TODO 删除
-        this.sqlFuncParser = sqlFuncParser; // TODO 删除
+        CharStream charStream = CharStreams.fromString(sqlFuc);
+        SqlFuncLexer lexer = new SqlFuncLexer(charStream);
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        SqlFuncParser parser = new SqlFuncParser(tokenStream);
+        ParseTree tree = parser.sqlFunc();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(this, tree);
     }
 
     @Override
@@ -135,15 +138,15 @@ public class SqlFuncDialectTransform extends SqlFuncParserBaseListener {
             // java变量(链式变量取值)
             String literal = javaVarContext.getText();
             Object value = OgnlCache.getValue(literal, ognlRoot);
-            // TODO name 策略
-            SqlFuncParam sqlFuncParam = new SqlFuncParam(true, literal, literal, value);
+            String name = SqlParameterNameStrategy.rename(literal);
+            SqlFuncParam sqlFuncParam = new SqlFuncParam(true, literal, name, value);
             param = new SqlFuncNodeParam(sqlFuncParam);
         } else if (javaFuncContext != null) {
             // java函数
             String literal = javaFuncContext.getText();
             Object value = OgnlCache.getValue(literal, ognlRoot);
-            // TODO name 策略
-            SqlFuncParam sqlFuncParam = new SqlFuncParam(true, literal, literal, value);
+            String name = SqlParameterNameStrategy.rename(literal);
+            SqlFuncParam sqlFuncParam = new SqlFuncParam(true, literal, name, value);
             param = new SqlFuncNodeParam(sqlFuncParam);
         } else {
             // null值 | bool值 | 整数数 | 浮点数 | 字符串值

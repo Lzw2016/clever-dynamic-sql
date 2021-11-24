@@ -2,19 +2,21 @@ package org.clever.dynamic.sql.builder;
 
 
 import org.clever.dynamic.sql.BoundSql;
+import org.clever.dynamic.sql.dialect.DbType;
 import org.clever.dynamic.sql.node.DynamicContext;
 import org.clever.dynamic.sql.node.SqlNode;
 
-public class RawSqlSource implements SqlSource {
-    private final SqlSource sqlSource;
+import java.util.HashMap;
 
-    public RawSqlSource(SqlNode rootSqlNode) {
-        this(getSql(rootSqlNode));
+public class RawSqlSource implements SqlSource {
+    private final StaticSqlSource sqlSource;
+
+    public RawSqlSource(DbType dbType, SqlNode rootSqlNode) {
+        this(dbType, getSql(rootSqlNode));
     }
 
-    public RawSqlSource(String sql) {
-        SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder(null);
-        sqlSource = sqlSourceParser.parse(sql);
+    public RawSqlSource(DbType dbType, String sql) {
+        this.sqlSource = new StaticSqlSource(dbType, sql, new DynamicContext(new HashMap<>()));
     }
 
     private static String getSql(SqlNode rootSqlNode) {

@@ -1,13 +1,6 @@
 package org.clever.dynamic.sql.dialect;
 
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.clever.dynamic.sql.dialect.antlr.SqlFuncLexer;
-import org.clever.dynamic.sql.dialect.antlr.SqlFuncParser;
 import org.clever.dynamic.sql.dialect.func.JoinFuncTransform;
 import org.clever.dynamic.sql.dialect.func.ToDateFuncTransform;
 import org.clever.dynamic.sql.dialect.utils.SqlFuncTransformUtils;
@@ -29,16 +22,9 @@ public class SqlFuncDialectTransformTest {
         SqlFuncTransformUtils.register(new JoinFuncTransform());
     }
 
-    public SqlFuncDialectTransform parser(String code, DbType dbType, Map<String, Object> ognlRoot) {
+    public SqlFuncDialectTransform parser(String code, Map<String, Object> ognlRoot) {
         final long startTime = System.currentTimeMillis();
-        CharStream charStream = CharStreams.fromString(code);
-        SqlFuncLexer lexer = new SqlFuncLexer(charStream);
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        SqlFuncParser parser = new SqlFuncParser(tokenStream);
-        ParseTree tree = parser.sqlFunc();
-        ParseTreeWalker walker = new ParseTreeWalker();
-        SqlFuncDialectTransform transform = new SqlFuncDialectTransform(dbType, ognlRoot, lexer, tokenStream, parser);
-        walker.walk(transform, tree);
+        SqlFuncDialectTransform transform = new SqlFuncDialectTransform(code, ognlRoot);
         final long endTime = System.currentTimeMillis();
         log.info("耗时：{}ms", endTime - startTime);
         return transform;
@@ -49,24 +35,24 @@ public class SqlFuncDialectTransformTest {
     public void t01() {
         // sql_func_1(jObject.fieldA.java_func(), jObject.fieldB, "YYYY-DD-MM", jVar2, jVar3)
         final String code = "sql_func_1(jObject.fieldA.java_func(), jObject.fieldB, \"YYYY-DD-MM\", jVar2, jVar3)";
-        SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, new HashMap<>());
-        log.info("--> {} | {}", transform.toSql(), transform.getSqlVariable());
+        SqlFuncDialectTransform transform = parser(code, new HashMap<>());
+        log.info("--> {} | {}", transform.toSql(DbType.MYSQL), transform.getSqlVariable(DbType.MYSQL));
     }
 
     @Test
     public void t02() {
         // sql_func_1(jObject.fieldA.java_func(jObject.fieldC, "abc"), jObject.fieldB, "YYYY-DD-MM", jVar2, jVar3)
         final String code = "sql_func_1(jObject.fieldA.java_func(jObject.fieldC, \"abc\"), jObject.fieldB, \"YYYY-DD-MM\", jVar2, jVar3)";
-        SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, new HashMap<>());
-        log.info("--> {} | {}", transform.toSql(), transform.getSqlVariable());
+        SqlFuncDialectTransform transform = parser(code, new HashMap<>());
+        log.info("--> {} | {}", transform.toSql(DbType.MYSQL), transform.getSqlVariable(DbType.MYSQL));
     }
 
     @Test
     public void t03() {
         // sql_func_1(jObject.java_func_1(jVar2, "ABC"), jVar3, sql_func_2(jVar3, jObject.java_func_2(jVar2, "ABC")))
         final String code = "sql_func_1(jObject.java_func_1(jVar2, \"ABC\"), jVar3, sql_func_2(jVar3, jObject.java_func_2(jVar2, \"ABC\")))";
-        SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, new HashMap<>());
-        log.info("--> {} | {}", transform.toSql(), transform.getSqlVariable());
+        SqlFuncDialectTransform transform = parser(code, new HashMap<>());
+        log.info("--> {} | {}", transform.toSql(DbType.MYSQL), transform.getSqlVariable(DbType.MYSQL));
     }
 
     @Test
@@ -77,14 +63,14 @@ public class SqlFuncDialectTransformTest {
         // to_date(today)
         final String code = "to_date(today)";
 
-        SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, bindings);
-        log.info("MYSQL        --> {} | {}", transform.toSql(), transform.getSqlVariable());
+        SqlFuncDialectTransform transform = parser(code, bindings);
+        log.info("MYSQL        --> {} | {}", transform.toSql(DbType.MYSQL), transform.getSqlVariable(DbType.MYSQL));
 
-        transform = parser(code, DbType.ORACLE, bindings);
-        log.info("ORACLE       --> {} | {}", transform.toSql(), transform.getSqlVariable());
+        transform = parser(code, bindings);
+        log.info("ORACLE       --> {} | {}", transform.toSql(DbType.ORACLE), transform.getSqlVariable(DbType.ORACLE));
 
-        transform = parser(code, DbType.SQL_SERVER, bindings);
-        log.info("SQL_SERVER   --> {} | {}", transform.toSql(), transform.getSqlVariable());
+        transform = parser(code, bindings);
+        log.info("SQL_SERVER   --> {} | {}", transform.toSql(DbType.SQL_SERVER), transform.getSqlVariable(DbType.SQL_SERVER));
     }
 
     @Test
@@ -92,8 +78,8 @@ public class SqlFuncDialectTransformTest {
         Map<String, Object> bindings = new HashMap<>();
         bindings.put("java_arr", Arrays.asList(1, 2, 3, 4, 5));
         final String code = "join(java_arr)";
-        SqlFuncDialectTransform transform = parser(code, DbType.MYSQL, bindings);
-        log.info("--> {} | {}", transform.toSql(), transform.getSqlVariable());
+        SqlFuncDialectTransform transform = parser(code, bindings);
+        log.info("--> {} | {}", transform.toSql(DbType.MYSQL), transform.getSqlVariable(DbType.MYSQL));
     }
 
     @Test
@@ -112,9 +98,9 @@ public class SqlFuncDialectTransformTest {
             String code = matcher.group();
             code = code.substring(3, code.length() - 2);
             start = matcher.end();
-            SqlFuncDialectTransform transform = parser(code, DbType.SQL_SERVER, bindings);
-            newSql.append(transform.toSql());
-            params.putAll(transform.getSqlVariable());
+            SqlFuncDialectTransform transform = parser(code, bindings);
+            newSql.append(transform.toSql(DbType.SQL_SERVER));
+            params.putAll(transform.getSqlVariable(DbType.SQL_SERVER));
         }
         newSql.append(sql, start, sql.length());
         log.info("newSql   --> {} | {}", newSql, params);

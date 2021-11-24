@@ -2,13 +2,16 @@ package org.clever.dynamic.sql.builder;
 
 
 import org.clever.dynamic.sql.BoundSql;
+import org.clever.dynamic.sql.dialect.DbType;
 import org.clever.dynamic.sql.node.DynamicContext;
 import org.clever.dynamic.sql.node.SqlNode;
 
 public class DynamicSqlSource implements SqlSource {
     private final SqlNode rootSqlNode;
+    private final DbType dbType;
 
-    public DynamicSqlSource(SqlNode rootSqlNode) {
+    public DynamicSqlSource(DbType dbType, SqlNode rootSqlNode) {
+        this.dbType = dbType;
         this.rootSqlNode = rootSqlNode;
     }
 
@@ -16,8 +19,7 @@ public class DynamicSqlSource implements SqlSource {
     public BoundSql getBoundSql(Object parameterObject) {
         DynamicContext context = new DynamicContext(parameterObject);
         rootSqlNode.apply(context);
-        SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder(context);
-        SqlSource sqlSource = sqlSourceParser.parse(context.getSql());
+        StaticSqlSource sqlSource = new StaticSqlSource(dbType, context.getSql(), context);
         BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
         context.getBindings().forEach(boundSql::setAdditionalParameter);
         context.getParameterExpressionSet().forEach(srt -> boundSql.getParameterExpressionSet().add(srt));

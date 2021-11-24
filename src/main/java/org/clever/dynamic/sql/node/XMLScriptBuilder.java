@@ -4,6 +4,7 @@ import org.clever.dynamic.sql.builder.BaseBuilder;
 import org.clever.dynamic.sql.builder.DynamicSqlSource;
 import org.clever.dynamic.sql.builder.RawSqlSource;
 import org.clever.dynamic.sql.builder.SqlSource;
+import org.clever.dynamic.sql.dialect.DbType;
 import org.clever.dynamic.sql.exception.BuilderException;
 import org.clever.dynamic.sql.parsing.XNode;
 import org.w3c.dom.Node;
@@ -18,9 +19,11 @@ public class XMLScriptBuilder extends BaseBuilder {
     private final XNode context;
     private boolean isDynamic;
     private final Map<String, NodeHandler> nodeHandlerMap = new HashMap<>(9);
+    private final DbType dbType;
 
-    public XMLScriptBuilder(XNode context) {
+    public XMLScriptBuilder(DbType dbType, XNode context) {
         super();
+        this.dbType = dbType;
         this.context = context;
         initNodeHandlerMap();
     }
@@ -41,9 +44,9 @@ public class XMLScriptBuilder extends BaseBuilder {
         MixedSqlNode rootSqlNode = parseDynamicTags(context);
         SqlSource sqlSource;
         if (isDynamic) {
-            sqlSource = new DynamicSqlSource(rootSqlNode);
+            sqlSource = new DynamicSqlSource(dbType, rootSqlNode);
         } else {
-            sqlSource = new RawSqlSource(rootSqlNode);
+            sqlSource = new RawSqlSource(dbType, rootSqlNode);
         }
         return sqlSource;
     }

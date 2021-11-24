@@ -3,6 +3,7 @@ package org.clever.dynamic.sql;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.clever.dynamic.sql.builder.SqlSource;
+import org.clever.dynamic.sql.dialect.DbType;
 import org.clever.dynamic.sql.dialect.func.JoinFuncTransform;
 import org.clever.dynamic.sql.dialect.func.ToDateFuncTransform;
 import org.clever.dynamic.sql.dialect.utils.SqlFuncTransformUtils;
@@ -71,7 +72,7 @@ public class MapperXmlParserTest {
 
     @Test
     public void t02() {
-        SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t02"));
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, getXNode("t02"));
         Map<String, Object> params = new HashMap<>();
         params.put("f1", "123");
         params.put("f2", "   ");
@@ -98,7 +99,7 @@ public class MapperXmlParserTest {
         entityA.setC(123.456);
         entityA.setD(new BigDecimal("456.789"));
         entityA.setE(true);
-        SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t03"));
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, getXNode("t03"));
         BoundSql boundSql = sqlSource.getBoundSql(entityA);
         log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
@@ -134,7 +135,7 @@ public class MapperXmlParserTest {
         entityMixin.setG(entityA);
         entityMixin.setH(entityB);
         entityMixin.setI(Arrays.asList(entityA, entityA, entityA));
-        SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t04"));
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, getXNode("t04"));
         BoundSql boundSql = sqlSource.getBoundSql(entityMixin);
         log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
@@ -146,10 +147,11 @@ public class MapperXmlParserTest {
     public void t05() {
         SqlFuncTransformUtils.register(new ToDateFuncTransform());
 
-        SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t05"));
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.ORACLE, getXNode("t05"));
         Map<String, Object> params = new HashMap<>();
         params.put("today1", new Date());
         params.put("today2", new Date());
+        params.put("sss", true);
         BoundSql boundSql = sqlSource.getBoundSql(params);
         log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
@@ -161,21 +163,9 @@ public class MapperXmlParserTest {
     public void t06() {
         SqlFuncTransformUtils.register(new JoinFuncTransform());
 
-        List<Integer> arr = new ArrayList<>();
-        arr.add(1);
-        arr.add(2);
-        arr.add(3);
-        arr.add(4);
-        arr.add(5);
-        SqlSource sqlSource = DynamicSqlParser.parserSql(getXNode("t06"));
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, getXNode("t06"));
         Map<String, Object> params = new HashMap<>();
-        params.put("arr", arr);
-
-        params.put("arr_item_1", 1);
-        params.put("arr_item_2", 2);
-        params.put("arr_item_3", 3);
-        params.put("arr_item_4", 4);
-        params.put("arr_item_5", 5);
+        params.put("arr", Arrays.asList(1, 2, 8, 4, 5, 6));
 
         BoundSql boundSql = sqlSource.getBoundSql(params);
         log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));

@@ -61,10 +61,16 @@
         select * from entity_a
         where a='@{to_date(today1)}'
           and b='@{to_date(today2)}'
+          and c='@{cccc_ccc("XXXX", sss, )}'
+          @{{filter("A.F1", "f1")}}
+          @{filter("A.F1", "f1")}
+          @{filter("A.F1", "f1")}
+          @{filter("A.F1", "f1")}
+          @{orderBy('f1 desc')}
     </select>
 
     <select id="t06">
-        select * from table where id in ('@{join(arr)}')
+        select * from table where id in (@{{join(arr)}})
     </select>
 
     <sql id="t07">

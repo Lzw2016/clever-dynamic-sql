@@ -3,6 +3,7 @@ package org.clever.dynamic.sql;
 import org.clever.dynamic.sql.builder.DynamicSqlSource;
 import org.clever.dynamic.sql.builder.RawSqlSource;
 import org.clever.dynamic.sql.builder.SqlSource;
+import org.clever.dynamic.sql.dialect.DbType;
 import org.clever.dynamic.sql.node.TextSqlNode;
 import org.clever.dynamic.sql.node.XMLScriptBuilder;
 import org.clever.dynamic.sql.parsing.PropertyParser;
@@ -23,25 +24,25 @@ public class DynamicSqlParser {
     private DynamicSqlParser() {
     }
 
-    public static SqlSource parserSql(String dynamicSql) {
+    public static SqlSource parserSql(DbType dbType, String dynamicSql) {
         final Properties variables = new Properties();
         dynamicSql = StringUtils.Instance.trim(dynamicSql);
         if (dynamicSql.startsWith("<script>")) {
             XPathParser parser = new XPathParser(dynamicSql, false, variables, new XMLMapperEntityResolver());
-            return parserSql(parser.evalNode("/script"));
+            return parserSql(dbType, parser.evalNode("/script"));
         } else {
             dynamicSql = PropertyParser.parse(dynamicSql, variables);
             TextSqlNode textSqlNode = new TextSqlNode(dynamicSql);
             if (textSqlNode.isDynamic()) {
-                return new DynamicSqlSource(textSqlNode);
+                return new DynamicSqlSource(dbType, textSqlNode);
             } else {
-                return new RawSqlSource(dynamicSql);
+                return new RawSqlSource(dbType, dynamicSql);
             }
         }
     }
 
-    public static SqlSource parserSql(XNode script) {
-        XMLScriptBuilder builder = new XMLScriptBuilder(script);
+    public static SqlSource parserSql(DbType dbType, XNode script) {
+        XMLScriptBuilder builder = new XMLScriptBuilder(dbType, script);
         return builder.parseScriptNode();
     }
 }

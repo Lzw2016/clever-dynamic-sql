@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.clever.dynamic.sql.builder.SqlSource;
+import org.clever.dynamic.sql.dialect.DbType;
 import org.clever.dynamic.sql.domain.Author;
 import org.clever.dynamic.sql.domain.Section;
 import org.clever.dynamic.sql.ognl.OgnlCache;
@@ -34,7 +35,7 @@ public class DynamicSqlParserTest {
     @Test
     public void t01() {
         String sql = sqlArray[0];
-        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, sql);
         Map<String, Object> params = new HashMap<>();
         params.put("id", 2);
         params.put("name", "%queryAll%");
@@ -49,7 +50,7 @@ public class DynamicSqlParserTest {
     @Test
     public void t02() {
         String sql = sqlArray[1];
-        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, sql);
         Map<String, Object> params = new HashMap<>();
         params.put("id", "value111111111111111111");
         params.put("name", "lzw");
@@ -90,7 +91,7 @@ public class DynamicSqlParserTest {
     @Test
     public void t03() {
         String sql = sqlArray[2];
-        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, sql);
         Author author = new Author(1, "cbegin", "******", "cbegin@apache.org", "N/A", Section.NEWS);
         BoundSql boundSql = sqlSource.getBoundSql(author);
         log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
@@ -103,7 +104,7 @@ public class DynamicSqlParserTest {
     @Test
     public void t04() {
         String sql = sqlArray[3];
-        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, sql);
         Author author = new Author(1, "cbegin", "******", "cbegin@apache.org", "N/A", Section.NEWS);
         Map<String, Object> params = new HashMap<>();
         params.put("author", author);
@@ -138,7 +139,7 @@ public class DynamicSqlParserTest {
         names.add("name6");
         params.put("names", names);
         params.put("orderBy", "a.aaa DESC, a.bbb ASC");
-        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, sql);
         final int count = 100000;
         final long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
@@ -152,7 +153,7 @@ public class DynamicSqlParserTest {
     @Test
     public void t06() {
         String sql = sqlArray[5];
-        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, sql);
         Map<String, Object> params = new HashMap<>();
         BoundSql boundSql = sqlSource.getBoundSql(params);
         log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
@@ -164,7 +165,7 @@ public class DynamicSqlParserTest {
     @Test
     public void t07() {
         String sql = sqlArray[6];
-        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, sql);
         Map<String, Object> params = new HashMap<>();
         BoundSql boundSql = sqlSource.getBoundSql(params);
         log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
@@ -177,7 +178,7 @@ public class DynamicSqlParserTest {
     @Test
     public void t08() {
         String sql = sqlArray[7];
-        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, sql);
         Map<String, Object> params = new HashMap<>();
         params.put("f1", "f1-val");
         params.put("f2", "f2-val");
@@ -197,7 +198,7 @@ public class DynamicSqlParserTest {
     @Test
     public void t09() {
         String sql = sqlArray[8];
-        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, sql);
         Map<String, Object> params = new HashMap<>();
         params.put("f1", "f1-val");
         params.put("f2", "f2-val");
@@ -215,7 +216,7 @@ public class DynamicSqlParserTest {
     @Test
     public void t10() {
         String sql = sqlArray[9];
-        SqlSource sqlSource = DynamicSqlParser.parserSql(sql);
+        SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, sql);
         Map<String, Object> params = new HashMap<>();
         params.put("f1", "123");
         params.put("f2", "   ");
