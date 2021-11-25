@@ -60,8 +60,10 @@
     <select id="t05">
         select * from entity_a
         where a='@{to_date(today1)}'
+          and cc=#{c}
           and b='@{to_date(today2)}'
-          and c='@{cccc_ccc("XXXX", sss, )}'
+          and c='@{func_1("tesst", a, func_2(b, c))}'
+          and bb=#{b}
     </select>
 
     <select id="t06">

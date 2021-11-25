@@ -151,7 +151,9 @@ public class MapperXmlParserTest {
         Map<String, Object> params = new HashMap<>();
         params.put("today1", new Date());
         params.put("today2", new Date());
-        params.put("sss", true);
+        params.put("a", "aaa");
+        params.put("b", "bbb");
+        params.put("c", "ccc");
         BoundSql boundSql = sqlSource.getBoundSql(params);
         log.info("--> {}", TestUtils.deleteWhitespace(boundSql.getSql()));
         log.info("--> {}", boundSql.getParameterValueList());
