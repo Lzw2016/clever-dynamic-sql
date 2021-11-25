@@ -165,6 +165,9 @@ public class MapperXmlParserTest {
 
         SqlSource sqlSource = DynamicSqlParser.parserSql(DbType.MYSQL, getXNode("t06"));
         Map<String, Object> params = new HashMap<>();
+        params.put("a", "aaa");
+        params.put("b", "bbb");
+        params.put("c", "ccc");
         params.put("arr", Arrays.asList(1, 2, 8, 4, 5, 6));
 
         BoundSql boundSql = sqlSource.getBoundSql(params);

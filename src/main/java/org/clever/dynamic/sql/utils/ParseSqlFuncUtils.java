@@ -36,6 +36,7 @@ public class ParseSqlFuncUtils {
             LinkedHashMap<String, Object> tmpSqlVariable = transform.getSqlVariable(dbType);
             tmpSqlVariable.forEach((name, value) -> {
                 name = SqlParameterNameStrategy.rename(name);
+                // name = SqlParameterNameStrategy.uniqueName(name);
                 sqlVariable.put(name, value);
             });
         }

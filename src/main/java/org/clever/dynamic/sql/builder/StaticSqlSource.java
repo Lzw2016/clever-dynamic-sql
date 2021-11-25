@@ -14,10 +14,6 @@ public class StaticSqlSource implements SqlSource {
     private final DynamicContext context;
     private final String originalSql;
 
-//    private final String sql;
-//    private final String namedParameterSql;
-//    private final List<String> parameterList;
-
     public StaticSqlSource(DbType dbType, String originalSql, DynamicContext context) {
         this.dbType = dbType;
         this.originalSql = originalSql;
@@ -29,13 +25,14 @@ public class StaticSqlSource implements SqlSource {
         String sqlDialect = originalSql;
         LinkedHashMap<String, Object> sqlVariable = new LinkedHashMap<>();
         if (ParseSqlFuncUtils.needParse(originalSql)) {
-            // TODO 参数顺序问题
             sqlDialect = ParseSqlFuncUtils.parseSqlFunc(dbType, originalSql, parameterObject, sqlVariable);
         }
+        // 普通sql(参数占位符 ?)
         ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler();
         GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
-        String sql = parser.parse(sqlDialect);
-        parser = new GenericTokenParser("#{", "}", new ParameterMappingTokenHandler() {
+        final String sql = parser.parse(sqlDialect);
+        // namedParameterSql(参数占位符 :parameterName)
+        handler = new ParameterMappingTokenHandler() {
             @Override
             public String handleToken(String content) {
                 context.addParameterExpression(content);
@@ -43,8 +40,9 @@ public class StaticSqlSource implements SqlSource {
                 parameterList.add(parameterName);
                 return ":" + parameterName;
             }
-        });
-        String namedParameterSql = parser.parse(sqlDialect);
+        };
+        parser = new GenericTokenParser("#{", "}", handler);
+        final String namedParameterSql = parser.parse(sqlDialect);
         BoundSql boundSql = new BoundSql(sql, namedParameterSql, handler.getParameterList(), parameterObject);
         sqlVariable.forEach(boundSql::setAdditionalParameter);
         return boundSql;
